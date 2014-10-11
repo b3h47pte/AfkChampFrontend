@@ -2,5 +2,20 @@
 {{end}}
 
 {{define "tbody"}}
-LOGIN PAGE
+<h1>LOGIN PAGE</h1>
+<form method="POST">
+  <div>
+    <label>Username:</label>
+    <input type="text" name="username"></input>
+  </div>
+  
+  <div>
+    <label>Password:</label>
+    <input type="password" name="password"></input>
+  </div>
+  
+  <div>
+    <input type="submit" value="Login"></input>
+  </div>
+</form>
 {{end}}

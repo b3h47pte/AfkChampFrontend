@@ -1,5 +1,5 @@
 /*
- * Provides basic login functionality that can be used across the site.
+ * 'Login' Provides basic login functionality that can be used across the site.
  */
 package controller
 
@@ -20,8 +20,8 @@ type LoginTemplateData struct {
   Data BaseTemplateData
 }
 
-var authSessionKey []byte
-var loginStore *sessions.CookieStore
+var AuthSessionKey []byte
+var LoginStore *sessions.CookieStore
 
 // Setup the secure session for the a user's login session.
 func InitializeLogin() {
@@ -31,14 +31,22 @@ func InitializeLogin() {
     log.Fatal(err)
   }
   hexAuthKey := config.AuthSection.AuthKey
-  authSessionKey, err := hex.DecodeString(hexAuthKey)
+  AuthSessionKey, err = hex.DecodeString(hexAuthKey)
   if err != nil {
     log.Fatal(err)
   }
-  loginStore = sessions.NewCookieStore(authSessionKey)
+  LoginStore = sessions.NewCookieStore(AuthSessionKey)
 }
 
+// HandleLoginPageRoute displays a login page if the user is not logged in. Otherwise,
+// the user is redirected to wherever he/she came from.
 func HandleLoginPageRoute(w http.ResponseWriter, r *http.Request) {
   t := LoginTemplateData{Data: CreateTemplateData()}
   TemplateMapping["login/login.html"].ExecuteTemplate(w, "tbase", t)
+}
+
+// HandleLoginAction takes in the user's name and password and checks whether or not they are registered. Sets 
+// relevant information in the cookie store to remember the user's session.
+func HandleLoginAction(w http.ResponseWriter, r *http.Request) {
+  r.ParseForm()
 }

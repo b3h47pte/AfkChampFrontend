@@ -1,5 +1,5 @@
 /*
- * Provides basic functionality for constructing a view using Go's template engine.
+ * 'View' Provides basic functionality for constructing a view using Go's template engine.
  */
 package controller
 

@@ -6,11 +6,13 @@ import(
   "AfkChampFrontend/controller/home"
   "AfkChampFrontend/controller/admin"
   "AfkChampFrontend/controller"
+  "AfkChampFrontend/model"
 )
 
-func main() {
+type AfkChampHandler func(w http.ResponseWriter, req *http.Request)
 
-  // Initialize frontend for use
+func main() {
+  model.InitializeDatabase()
   controller.InitializeTemplates()
   controller.InitializeLogin()
 
@@ -19,6 +21,9 @@ func main() {
   r.HandleFunc("/",home.HandleHomeRoute)
   r.HandleFunc("/admin",admin.HandleAdminRoute)
   r.HandleFunc("/login",controller.HandleLoginPageRoute).Methods("GET")
+  r.HandleFunc("/login",controller.HandleLoginAction).Methods("POST")
   http.Handle("/",r)
+  
+  // TODO: Use HTTPS
   http.ListenAndServe("127.0.0.1:80",nil)
 }
