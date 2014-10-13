@@ -7,6 +7,8 @@ import(
   "AfkChampFrontend/controller/admin"
   "AfkChampFrontend/controller"
   "AfkChampFrontend/model"
+  "AfkChampFrontend/model/user"
+  "log"
 )
 
 type AfkChampHandler func(w http.ResponseWriter, req *http.Request)
@@ -23,6 +25,15 @@ func main() {
   r.HandleFunc("/login",controller.HandleLoginPageRoute).Methods("GET")
   r.HandleFunc("/login",controller.HandleLoginAction).Methods("POST")
   http.Handle("/",r)
+  
+  err := user.CreateUser("test", "test")
+  if err != nil {
+    log.Print(err)
+  }
+  err = user.VerifyUser("test", "tdest")
+  if err != nil {
+    log.Print(err)
+  }
   
   // TODO: Use HTTPS
   http.ListenAndServe("127.0.0.1:80",nil)

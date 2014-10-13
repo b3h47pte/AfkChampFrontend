@@ -9,6 +9,7 @@ import(
   "encoding/hex"
   "log"
   "github.com/gorilla/sessions"
+ // "AfkChampFrontend/model/user"
 )
 type LoginConfig struct {
   AuthSection struct {
@@ -48,5 +49,10 @@ func HandleLoginPageRoute(w http.ResponseWriter, r *http.Request) {
 // HandleLoginAction takes in the user's name and password and checks whether or not they are registered. Sets 
 // relevant information in the cookie store to remember the user's session.
 func HandleLoginAction(w http.ResponseWriter, r *http.Request) {
+  r.ParseForm()
+}
+
+// HandleRegisterAction allows you to register a new user given a username and password.
+func HandleRegisterAction(w http.ResponseWriter, r *http.Request) {
   r.ParseForm()
 }

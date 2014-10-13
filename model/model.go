@@ -6,20 +6,22 @@ package model
 import(
   "log"
   _ "github.com/lib/pq"
-  "database/sql"
+  "github.com/jmoiron/sqlx"
   "code.google.com/p/gcfg"
 )
 
 type DatabaseConfig struct {
   Database struct {
     DatabaseUrl string
+    DatabasePort string
     DatabaseUsername string
     DatabasePassword string
     DatabaseName string
+    DatabaseUseSSL bool
   }
 }
 
-var Database *sql.DB
+var Database *sqlx.DB
 
 // 'InitializeDatabase' sets up a connection with all the databases this program will need.
 func InitializeDatabase() {
@@ -31,8 +33,15 @@ func InitializeDatabase() {
   }
   
   // Connect
-  Database, err = sql.Open("postgres", "postgres://" + config.Database.DatabaseUsername + ":" + config.Database.DatabasePassword +
-    "@" + config.Database.DatabaseUrl + "/" + config.Database.DatabaseName + "?sslmode=verify-full")
+  fullDBUrl := "postgres://" + config.Database.DatabaseUsername + ":" + config.Database.DatabasePassword +
+    "@" + config.Database.DatabaseUrl + ":" + config.Database.DatabasePort + "/" + config.Database.DatabaseName
+  if config.Database.DatabaseUseSSL {
+    fullDBUrl += "?sslmode=verify-full"
+  } else {
+    fullDBUrl += "?sslmode=disable"
+  }
+  
+  Database, err = sqlx.Connect("postgres", fullDBUrl)
   if err != nil {
     log.Fatal(err)
   }
