@@ -7,8 +7,6 @@ import(
   "AfkChampFrontend/controller/admin"
   "AfkChampFrontend/controller"
   "AfkChampFrontend/model"
-  "AfkChampFrontend/model/user"
-  "log"
 )
 
 type AfkChampHandler func(w http.ResponseWriter, req *http.Request)
@@ -24,6 +22,8 @@ func main() {
   r.HandleFunc("/admin",admin.HandleAdminRoute)
   r.HandleFunc("/login",controller.HandleLoginPageRoute).Methods("GET")
   r.HandleFunc("/login",controller.HandleLoginAction).Methods("POST")
+  r.HandleFunc("/register",controller.HandleRegisterPageRoute).Methods("GET")
+  r.HandleFunc("/register",controller.HandleRegisterAction).Methods("POST")
   http.Handle("/",r)
   
   // TODO: Use HTTPS
