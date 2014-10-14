@@ -13,7 +13,7 @@ type BaseTemplateData struct {
   Data interface{}
 }
 
-func InitializeTemplates() {
+func init() {
   TemplateMapping = make(map[string]*template.Template)
   
   // Store a mapping of all templates here

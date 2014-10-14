@@ -6,16 +6,11 @@ import(
   "AfkChampFrontend/controller/home"
   "AfkChampFrontend/controller/admin"
   "AfkChampFrontend/controller"
-  "AfkChampFrontend/model"
 )
 
 type AfkChampHandler func(w http.ResponseWriter, req *http.Request)
 
 func main() {
-  model.InitializeDatabase()
-  controller.InitializeTemplates()
-  controller.InitializeLogin()
-
   // Setup the routing for the frontend.
   r := mux.NewRouter()
   r.HandleFunc("/",home.HandleHomeRoute)
@@ -24,6 +19,7 @@ func main() {
   r.HandleFunc("/login",controller.HandleLoginAction).Methods("POST")
   r.HandleFunc("/register",controller.HandleRegisterPageRoute).Methods("GET")
   r.HandleFunc("/register",controller.HandleRegisterAction).Methods("POST")
+  r.HandleFunc("/logout",controller.HandleLogoutPageRoute).Methods("GET")
   http.Handle("/",r)
   
   // TODO: Use HTTPS

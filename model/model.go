@@ -5,7 +5,7 @@ package model
 
 import(
   "log"
-  _ "github.com/lib/pq"
+  _ "github.com/go-sql-driver/mysql"
   "github.com/jmoiron/sqlx"
   "code.google.com/p/gcfg"
 )
@@ -23,8 +23,8 @@ type DatabaseConfig struct {
 
 var Database *sqlx.DB
 
-// 'InitializeDatabase' sets up a connection with all the databases this program will need.
-func InitializeDatabase() {
+// 'init' sets up a connection with all the databases this program will need.
+func init() {
   // Main database
   var config DatabaseConfig
   err := gcfg.ReadFileInto(&config, "config/db.config")
@@ -33,15 +33,15 @@ func InitializeDatabase() {
   }
   
   // Connect
-  fullDBUrl := "postgres://" + config.Database.DatabaseUsername + ":" + config.Database.DatabasePassword +
-    "@" + config.Database.DatabaseUrl + ":" + config.Database.DatabasePort + "/" + config.Database.DatabaseName
+  fullDBUrl := config.Database.DatabaseUsername + ":" + config.Database.DatabasePassword +
+    "@tcp(" + config.Database.DatabaseUrl + ":" + config.Database.DatabasePort + ")/" + config.Database.DatabaseName
   if config.Database.DatabaseUseSSL {
-    fullDBUrl += "?sslmode=verify-full"
-  } else {
-    fullDBUrl += "?sslmode=disable"
+    fullDBUrl += "?tls=true"
   }
+  // Need date time support
+  fullDBUrl += "?parseTime=true"
   
-  Database, err = sqlx.Connect("postgres", fullDBUrl)
+  Database, err = sqlx.Connect("mysql", fullDBUrl)
   if err != nil {
     log.Fatal(err)
   }
