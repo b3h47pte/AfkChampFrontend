@@ -12,6 +12,7 @@ import(
   "AfkChampFrontend/model/user"
   "code.google.com/p/go-uuid/uuid"
   "time"
+  "encoding/json"
 )
 type LoginConfig struct {
   AuthSection struct {
@@ -93,8 +94,17 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request) {
     w.Write([]byte(user.UserLoggedInError.Error()))
     return
   }
-  r.ParseForm()
-  newUser, err := user.VerifyUser(r.PostFormValue("username"), r.PostFormValue("password"))
+ 
+  decoder := json.NewDecoder(r.Body)
+  var postData map[string]string
+  err := decoder.Decode(&postData)
+  if err != nil {
+    log.Print(err)
+    w.Write([]byte(user.UserUnspecifiedError.Error()))
+    return
+  }
+ 
+  newUser, err := user.VerifyUser(postData["username"], postData["password"])
   if err != nil {
     w.Write([]byte(user.UserDoesNotExist.Error()))
     return
@@ -117,8 +127,17 @@ func HandleRegisterAction(w http.ResponseWriter, r *http.Request) {
     w.Write([]byte(user.UserLoggedInError.Error()))
     return
   }
-  r.ParseForm()
-  newUser, err := user.CreateUser(r.PostFormValue("username"), r.PostFormValue("password"), r.PostFormValue("email"))
+  
+  decoder := json.NewDecoder(r.Body)
+  var postData map[string]string
+  err := decoder.Decode(&postData)
+  if err != nil {
+    log.Print(err)
+    w.Write([]byte(user.UserUnspecifiedError.Error()))
+    return
+  }
+  
+  newUser, err := user.CreateUser(postData["username"], postData["password"], postData["email"])
   switch {
   case err == user.UserExistsError:
     // Case where we need to inform user
