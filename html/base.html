@@ -1,12 +1,14 @@
-{{define "tbase"}}
-<html>
+<<define "tbase">>
+<html ng-app="rocketelo">
 <head>
-<title>{{.Data.WebsiteName}}</title>
-<script src="/javascript/angular.min.js"></script>
-{{template "thead" .}}
+<title><<.Data.WebsiteName>></title>
+<script src="/javascript/external/angular.js"></script>
+<script src="/javascript/external/ui-utils.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/css/external/bootstrap.min.css">
+<<template "thead" .>>
 </head>
 <body>
-{{template "tbody" .}}
+<<template "tbody" .>>
 </body>
 <html>
-{{end}}
+<<end>>

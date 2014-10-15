@@ -24,6 +24,7 @@ func main() {
   
   // Static Content
   r.PathPrefix("/javascript/").Handler(http.StripPrefix("/javascript/", http.FileServer(http.Dir("./javascript/"))))
+  r.PathPrefix("/css/").Handler(http.StripPrefix("/css/", http.FileServer(http.Dir("./css/"))))
   
   http.Handle("/",r)
   

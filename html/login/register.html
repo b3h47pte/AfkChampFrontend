@@ -1,31 +1,40 @@
-{{define "thead"}}
-{{end}}
+<<define "thead">>
+<script src="/javascript/login/login.js"></script>
+<<end>>
 
-{{define "tbody"}}
+<<define "tbody">>
 <h1>REGISTER PAGE</h1>
-<form method="POST">
+<form name="registerForm" ng-controller="LoginController">
   <div>
     <label>Username:</label>
-    <input type="text" name="username"></input>
+    <input type="text" name="username" ng-model="user.username" required></input>
+    <span ng-show="registerForm.username.$error.required && !registerForm.username.$pristine">Required</span>
   </div>
   
   <div>
     <label>Email:</label>
-    <input type="text" name="email"></input>
+    <input type="text" name="email" ng-model="user.email" required></input>
+    <span ng-show="registerForm.email.$error.required && !registerForm.email.$pristine">Required</span>
   </div>
   
   <div>
     <label>Password:</label>
-    <input type="password" name="password"></input>
+    <input type="password" name="password" ng-model="user.password" ng-minlength="<<.MinimumPasswordLength>>" required></input>
+    <span ng-show="registerForm.password.$error.required && !registerForm.password.$pristine">Required</span>
+    <span ng-show="registerForm.password.$error.minlength && !registerForm.password.$pristine">Password must be at least <<.MinimumPasswordLength>> characters long.</span>
   </div>
   
   <div>
     <label>Confirm Password:</label>
-    <input type="password" name="confirm_password"></input>
+    <input type="password" name="confirm_password" ng-model="user.confirm_password" ui-validate="{passwordMatch : '$value == user.password'}"  ui-validate-watch=" 'user.password' " required></input>
+    <span ng-show="registerForm.confirm_password.$error.required && !registerForm.confirm_password.$pristine">Required</span>
+    <span ng-show="registerForm.confirm_password.$error.passwordMatch && !registerForm.confirm_password.$pristine">Passwords do not match.</span>
   </div>
   
   <div>
-    <input type="submit" value="Register"></input>
+    <button ng-click="register(user)" ng-disabled="registerForm.$invalid" class="btn btn-primary">Register</button>
+    <a href="/login">Already a user? Login here.</a>
   </div>
 </form>
-{{end}}
+
+<<end>>

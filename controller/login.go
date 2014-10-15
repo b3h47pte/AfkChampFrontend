@@ -21,10 +21,20 @@ type LoginConfig struct {
 
 type LoginTemplateData struct {
   Data BaseTemplateData
+  MinimumPasswordLength uint8
+  MaximumEmailLength uint8
 }
 
 var AuthSessionKey []byte
 var LoginStore *sessions.CookieStore
+
+// Generate default login template data
+func CreateLoginTemplateData() *LoginTemplateData {
+  t := LoginTemplateData{Data: CreateTemplateData(),
+    MinimumPasswordLength: user.MinPasswordLength,
+    MaximumEmailLength: user.MaxEmailLength}
+  return &t
+}
 
 // Setup the secure session for the a user's login session.
 func init() {
@@ -50,7 +60,7 @@ func HandleLoginPageRoute(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  t := LoginTemplateData{Data: CreateTemplateData()}
+  t := CreateLoginTemplateData()
   TemplateMapping["login/login.html"].ExecuteTemplate(w, "tbase", t)
 }
 
@@ -71,7 +81,7 @@ func HandleRegisterPageRoute(w http.ResponseWriter, r *http.Request) {
     http.Redirect(w, r, "/", http.StatusFound)
     return
   }
-  t := LoginTemplateData{Data: CreateTemplateData()}
+  t := CreateLoginTemplateData()
   TemplateMapping["login/register.html"].ExecuteTemplate(w, "tbase", t)
 }
 
