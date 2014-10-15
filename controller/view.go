@@ -17,6 +17,7 @@ func init() {
   TemplateMapping = make(map[string]*template.Template)
   
   // Store a mapping of all templates here
+  TemplateMapping["main/home.html"] = template.Must(template.ParseFiles("html/base.html", "html/main/home.html"))
   TemplateMapping["login/login.html"] = template.Must(template.ParseFiles("html/base.html", "html/login/login.html"))
   TemplateMapping["login/register.html"] = template.Must(template.ParseFiles("html/base.html", "html/login/register.html"))
 }
