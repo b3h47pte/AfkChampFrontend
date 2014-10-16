@@ -12,8 +12,31 @@ import(
   "AfkChampFrontend/model/user"
   "code.google.com/p/go-uuid/uuid"
   "time"
-  "encoding/json"
+  "AfkChampFrontend/utility"
 )
+
+type LoginRegisterPostData struct {
+  Username string
+  Password string
+  Email string
+}
+
+type LoginRegisterErrorCode int
+const (
+  ErrorNoError LoginRegisterErrorCode = iota
+  ErrorInvalidRegisterUserName
+  ErrorInvalidRegisterPassword
+  ErrorInvalidRegisterEmail
+  ErrorInvalidLoginCredentials
+  ErrorAlreadyLoggedIn
+  ErrorUnspecifiedError
+)
+
+type LoginRegisterResponse struct {
+  ErrorCode LoginRegisterErrorCode
+  RedirectUrl string
+}
+
 type LoginConfig struct {
   AuthSection struct {
     AuthKey string
@@ -94,21 +117,20 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request) {
     w.Write([]byte(user.UserLoggedInError.Error()))
     return
   }
- 
-  decoder := json.NewDecoder(r.Body)
-  var postData map[string]string
-  err := decoder.Decode(&postData)
+  
+  userData := LoginRegisterPostData{}
+  err := utility.ReadJsonFromRequestBodyStruct(r, &userData)
   if err != nil {
-    log.Print(err)
     w.Write([]byte(user.UserUnspecifiedError.Error()))
     return
   }
  
-  newUser, err := user.VerifyUser(postData["username"], postData["password"])
+  newUser, err := user.VerifyUser(userData.Username, userData.Password)
   if err != nil {
     w.Write([]byte(user.UserDoesNotExist.Error()))
     return
   }
+  
   err = CreateUserSession(newUser, w, r)
   if err != nil {
     log.Print(err)
@@ -128,16 +150,14 @@ func HandleRegisterAction(w http.ResponseWriter, r *http.Request) {
     return
   }
   
-  decoder := json.NewDecoder(r.Body)
-  var postData map[string]string
-  err := decoder.Decode(&postData)
+  userData := LoginRegisterPostData{}
+  err := utility.ReadJsonFromRequestBodyStruct(r, &userData)
   if err != nil {
-    log.Print(err)
     w.Write([]byte(user.UserUnspecifiedError.Error()))
     return
   }
   
-  newUser, err := user.CreateUser(postData["username"], postData["password"], postData["email"])
+  newUser, err := user.CreateUser(userData.Username, userData.Password, userData.Email)
   switch {
   case err == user.UserExistsError:
     // Case where we need to inform user
@@ -228,4 +248,14 @@ func RemoveUserSession(key string, w http.ResponseWriter, r *http.Request) error
   }
   delete(session.Values, "key")
   return user.RemoveSessionForUser(key)
+}
+
+// LoginRegisterRespondJsonError takes in an error code and an appropriate redirectURL and sends it to the client in JSON form.
+func LoginRegisterRespondJsonError(errorCode LoginRegisterErrorCode, redirectUrl string, w http.ResponseWriter) {
+  response := LoginRegisterResponse{ErrorCode: errorCode, RedirectUrl: redirectUrl}
+  // If any error happens here, then the only thing we can redirect the user to is an error page.
+  err := utility.WriteJsonToResponse(w, response)
+  if err != nil {
+    log.Print(err)
+  }
 }

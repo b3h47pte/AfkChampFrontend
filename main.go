@@ -26,8 +26,12 @@ func main() {
   r.PathPrefix("/javascript/").Handler(http.StripPrefix("/javascript/", http.FileServer(http.Dir("./javascript/"))))
   r.PathPrefix("/css/").Handler(http.StripPrefix("/css/", http.FileServer(http.Dir("./css/"))))
   
+  // Error Pages  
+  r.NotFoundHandler = http.HandlerFunc(controller.Handle404Page)
+  
   http.Handle("/",r)
   
   // TODO: Use HTTPS
   http.ListenAndServe("127.0.0.1:80",nil)
 }
+
