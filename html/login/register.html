@@ -9,6 +9,7 @@
     <label>Username:</label>
     <input type="text" name="username" ng-model="user.username" required></input>
     <span ng-show="registerForm.username.$error.required && !registerForm.username.$pristine">Required</span>
+    <span ng-show="usernameError">Username already taken.</span>
   </div>
   
   <div>

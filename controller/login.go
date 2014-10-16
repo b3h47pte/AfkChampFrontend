@@ -114,31 +114,32 @@ func HandleRegisterPageRoute(w http.ResponseWriter, r *http.Request) {
 func HandleLoginAction(w http.ResponseWriter, r *http.Request) {
   if _, err := GetCurrentUser(w, r); err == nil {
     // If we succeed, for whatever reason, it means we're logged in already.
-    w.Write([]byte(user.UserLoggedInError.Error()))
+    LoginRegisterRespondJsonError(ErrorAlreadyLoggedIn, "/", w)
     return
   }
   
   userData := LoginRegisterPostData{}
   err := utility.ReadJsonFromRequestBodyStruct(r, &userData)
   if err != nil {
-    w.Write([]byte(user.UserUnspecifiedError.Error()))
+    log.Print(err)
+    LoginRegisterRespondJsonError(ErrorUnspecifiedError, "", w)
     return
   }
  
   newUser, err := user.VerifyUser(userData.Username, userData.Password)
   if err != nil {
-    w.Write([]byte(user.UserDoesNotExist.Error()))
+    LoginRegisterRespondJsonError(ErrorInvalidLoginCredentials, "", w)
     return
   }
   
   err = CreateUserSession(newUser, w, r)
   if err != nil {
     log.Print(err)
-    w.Write([]byte(user.UserUnspecifiedError.Error()))
+    LoginRegisterRespondJsonError(ErrorUnspecifiedError, "/login", w)
     return
   }
   // Success!
-  http.Redirect(w, r, "/", http.StatusFound)
+  LoginRegisterRespondJsonError(ErrorNoError, "/", w)
 }
 
 // HandleRegisterAction allows you to register a new user given a username and password. If registration is successful, also
@@ -146,14 +147,14 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request) {
 func HandleRegisterAction(w http.ResponseWriter, r *http.Request) {
   if _, err := GetCurrentUser(w, r); err == nil {
     // If we succeed, for whatever reason, it means we're logged in already.
-    w.Write([]byte(user.UserLoggedInError.Error()))
+    LoginRegisterRespondJsonError(ErrorAlreadyLoggedIn, "/", w)
     return
   }
   
   userData := LoginRegisterPostData{}
   err := utility.ReadJsonFromRequestBodyStruct(r, &userData)
   if err != nil {
-    w.Write([]byte(user.UserUnspecifiedError.Error()))
+    LoginRegisterRespondJsonError(ErrorUnspecifiedError, "", w)
     return
   }
   
@@ -161,22 +162,22 @@ func HandleRegisterAction(w http.ResponseWriter, r *http.Request) {
   switch {
   case err == user.UserExistsError:
     // Case where we need to inform user
-    w.Write([]byte(err.Error()))
+    LoginRegisterRespondJsonError(ErrorInvalidRegisterUserName, "", w)
     return
   case err != nil:
     // Just keep a mental note to ourself but display another error to the user
     log.Print(err)
-    w.Write([]byte(user.UserUnspecifiedError.Error()))
+    LoginRegisterRespondJsonError(ErrorUnspecifiedError, "", w)
     return
   }
   err = CreateUserSession(newUser, w, r)
   if err != nil {
     log.Print(err)
-    w.Write([]byte(user.UserUnspecifiedError.Error()))
+    LoginRegisterRespondJsonError(ErrorUnspecifiedError, "", w)
     return
   }
   // Assume success and redirect to front page
-  http.Redirect(w, r, "/", http.StatusFound)
+  LoginRegisterRespondJsonError(ErrorNoError, "/", w)
 }
 
 // 'GetCurrentUser' will retrieve the currently logged in user.
@@ -253,9 +254,29 @@ func RemoveUserSession(key string, w http.ResponseWriter, r *http.Request) error
 // LoginRegisterRespondJsonError takes in an error code and an appropriate redirectURL and sends it to the client in JSON form.
 func LoginRegisterRespondJsonError(errorCode LoginRegisterErrorCode, redirectUrl string, w http.ResponseWriter) {
   response := LoginRegisterResponse{ErrorCode: errorCode, RedirectUrl: redirectUrl}
+  if errorCode != ErrorNoError {
+    htmlErrCode, errString := getErrorCodeFromLoginError(errorCode)
+    http.Error(w, errString, htmlErrCode)
+  }
+  
   // If any error happens here, then the only thing we can redirect the user to is an error page.
   err := utility.WriteJsonToResponse(w, response)
   if err != nil {
     log.Print(err)
+    return
   }
+}
+
+func getErrorCodeFromLoginError(errorCode LoginRegisterErrorCode) (int, string) {
+  switch errorCode {
+  case ErrorInvalidRegisterUserName, ErrorInvalidRegisterPassword, ErrorInvalidRegisterEmail, ErrorInvalidLoginCredentials:
+    return 401, ""
+  case ErrorAlreadyLoggedIn:
+    return 403, ""
+  case ErrorUnspecifiedError:
+    return 500, ""
+  default:
+    return 200, ""
+  }
+  return 200, ""
 }

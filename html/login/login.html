@@ -18,6 +18,8 @@
     <span ng-show="loginForm.password.$error.minlength && !loginForm.password.$pristine">Password must be at least <<.MinimumPasswordLength>> characters long.</span>
   </div>
   
+  <span ng-show="!loginSucceed">Username/password do not match.</span>
+  
   <div>
     <button ng-click="login(user)" ng-disabled="loginForm.$invalid" class="btn btn-primary">Login</button>
     <a class="btn btn-success" href="/register">Register</a>
