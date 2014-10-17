@@ -8,7 +8,11 @@
 <link rel="stylesheet" href="/css/external/bootstrap.min.css">
 <<template "thead" .>>
 </head>
-<body>
+<body ng-controller="MainBodyController">
+<!-- Flash message -->
+<div ng-show="getFlashMessage()"> 
+  <div class="alert alert-danger" role="alert">{{getFlashMessage()}}</div>
+</div>
 <<template "tbody" .>>
 </body>
 <html>
