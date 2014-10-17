@@ -18,8 +18,9 @@ func init() {
   
   // Store a mapping of all templates here
   TemplateMapping["main/home.html"] = template.Must(template.New("main/home.html").Delims("<<", ">>").ParseFiles("html/base.html", "html/main/home.html"))
-  TemplateMapping["login/login.html"] = template.Must(template.New("main/home.html").Delims("<<", ">>").ParseFiles("html/base.html", "html/login/login.html"))
-  TemplateMapping["login/register.html"] = template.Must(template.New("main/home.html").Delims("<<", ">>").ParseFiles("html/base.html", "html/login/register.html"))
+  TemplateMapping["about/about.html"] = template.Must(template.New("about/about.html").Delims("<<", ">>").ParseFiles("html/base.html", "html/about/about.html"))
+  TemplateMapping["login/login.html"] = template.Must(template.New("login/login.html").Delims("<<", ">>").ParseFiles("html/base.html", "html/login/login.html"))
+  TemplateMapping["login/register.html"] = template.Must(template.New("login/register.html").Delims("<<", ">>").ParseFiles("html/base.html", "html/login/register.html"))
 }
 
 func CreateTemplateData() BaseTemplateData {

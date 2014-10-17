@@ -4,6 +4,7 @@ import(
   "github.com/gorilla/mux"
   "net/http"
   "AfkChampFrontend/controller/admin"
+  "AfkChampFrontend/controller/about"
   "AfkChampFrontend/controller"
 )
 
@@ -21,6 +22,7 @@ func main() {
   r.HandleFunc("/register",controller.HandleRegisterPageRoute).Methods("GET")
   r.HandleFunc("/register",controller.HandleRegisterAction).Methods("POST")
   r.HandleFunc("/logout",controller.HandleLogoutPageRoute).Methods("GET")
+  r.HandleFunc("/about",about.HandleAboutRoute).Methods("GET")
   
   // Static Content
   r.PathPrefix("/javascript/").Handler(http.StripPrefix("/javascript/", http.FileServer(http.Dir("./javascript/"))))
