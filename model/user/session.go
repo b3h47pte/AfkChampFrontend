@@ -32,37 +32,40 @@ func AddSessionForUser(inUser *UserEntry, sessionKey string, expirationTime *tim
   return nil
 }
 
-// 'VerifySession' takes in a session key and checks to see if it matches any of the user's session keys. If successful, we return the user ID.
-func VerifySession(sessionKey string, isAdmin bool) (int64, error) {
-  row := model.Database.QueryRowx("SELECT * FROM sessions WHERE sessionid = ? AND isadmin = ?", sessionKey, isAdmin)
+// 'VerifySession' takes in a session key and checks to see if it matches any of the user's session keys. If successful, we return nil
+// otherwise we return an appropriate error.
+func VerifySession(sessionKey string, userId int64, isAdmin bool) error {
+  row := model.Database.QueryRowx("SELECT * FROM sessions WHERE sessionid = ? AND userid = ? AND isadmin = ?", 
+    sessionKey, userId, isAdmin)
   sessionRow := SessionEntry{}
   err := row.StructScan(&sessionRow)
     
   if err != nil {
-    return -1, err
+    return err
   }
   
   // If the session is expired, delete it and fail.
   currentTime := time.Now()
-  if sessionRow.Expiration.After(currentTime) {
-    RemoveSessionForUser(sessionKey, isAdmin)
-    return -1, NoSessionError
+  if sessionRow.Expiration.Before(currentTime) {
+    RemoveSessionForUser(sessionKey, userId, isAdmin)
+    return NoSessionError
   }
   
-  return sessionRow.UserId, nil
+  return nil
 }
 
 // 'RemoveSessionForUser' takes in a session key and attempts to remove the key.
-func RemoveSessionForUser(sessionKey string, isAdmin bool) error {
-  _, err := model.Database.Exec("DELETE FROM sessions WHERE sessionid = ? AND isadmin = ?", sessionKey, isAdmin)
+func RemoveSessionForUser(sessionKey string, userId int64, isAdmin bool) error {
+  _, err := model.Database.Exec("DELETE FROM sessions WHERE sessionid = ? AND userid = ? AND isadmin = ?", sessionKey, userId, isAdmin)
   if err != nil {
     return err
   }
   return nil
 }
 
-func getSession(sessionKey string, isAdmin bool) (*sqlx.Rows, error) {
-  rows, err := model.Database.Queryx("SELECT * FROM sessions WHERE sessionid = ? AND isadmin = ?", sessionKey, isAdmin)
+func getSession(sessionKey string, userId int64, isAdmin bool) (*sqlx.Rows, error) {
+  rows, err := model.Database.Queryx("SELECT * FROM sessions WHERE sessionid = ? AND userid = ? AND isadmin = ?", 
+    sessionKey, userId,isAdmin)
   if err != nil {
     return nil, err
   }

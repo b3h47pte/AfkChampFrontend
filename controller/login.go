@@ -93,12 +93,12 @@ func HandleLoginPageRoute(w http.ResponseWriter, r *http.Request) {
 
 // HandleLogoutPageRoute logs out the current user and directs him/her back to the home page. Removes any admin sessions as well
 func HandleLogoutPageRoute(w http.ResponseWriter, r *http.Request) {
-  if sessionKey, err := GetUserSession(w, r, false); err == nil {
-    RemoveUserSession(sessionKey, w, r, false)
+  if sessionKey, userId, err := GetUserSession(w, r, false); err == nil {
+    RemoveUserSession(sessionKey, w, r, userId, false)
   }
   
-  if sessionKey, err := GetUserSession(w, r, true); err == nil {
-    RemoveUserSession(sessionKey, w, r, true)
+  if sessionKey, userId, err := GetUserSession(w, r, true); err == nil {
+    RemoveUserSession(sessionKey, w, r, userId, true)
   }
   
   http.Redirect(w, r, "/", http.StatusFound)
@@ -195,11 +195,11 @@ func HandleRegisterAction(w http.ResponseWriter, r *http.Request) {
 
 // 'GetCurrentUser' will retrieve the currently logged in user.
 func GetCurrentUser(w http.ResponseWriter, r *http.Request, forceAdmin bool) (*user.UserEntry, error) {
-  sessionKey, err := GetUserSession(w, r, forceAdmin)
+  sessionKey, userId, err := GetUserSession(w, r, forceAdmin)
   if err != nil {
     return nil, err 
   }
-  userId, err := user.VerifySession(sessionKey, forceAdmin)
+  err = user.VerifySession(sessionKey, userId, forceAdmin)
   if err != nil {
     return nil, err
   }
@@ -207,20 +207,26 @@ func GetCurrentUser(w http.ResponseWriter, r *http.Request, forceAdmin bool) (*u
 }
 
 // 'GetUserSession' gets the current user's session (if the user has logged in before hand and we stored the session cookie).
-func GetUserSession(w http.ResponseWriter, r *http.Request, forceAdmin bool) (string, error) {
+func GetUserSession(w http.ResponseWriter, r *http.Request, forceAdmin bool) (string, int64, error) {
   session, err := LoginStore.Get(r, "user-session")
   if forceAdmin {
     session, err = LoginStore.Get(r, "admin-session")
   }
   
   if err != nil {
-    return "", err
+    return "", -1, err
   }
+  
   sessionKey, ok := session.Values["key"]
   if !ok {
-    return "", user.NoSessionError
+    return "", -1, user.NoSessionError
   }
-  return sessionKey.(string), nil
+  
+  userId, ok := session.Values["user"]
+  if !ok {
+    return "", -1, user.NoSessionError
+  }
+  return sessionKey.(string), userId.(int64), nil
 }
 
 // 'CreateUserSession' takes in a given user and creates a new session cookie for the user. This function
@@ -242,7 +248,7 @@ func CreateUserSession(newUser *user.UserEntry, w http.ResponseWriter, r *http.R
   
   // If this is a valid key, then we can keep it otherwise we want to make a new one.
   // If we have a valid key already, then we can just ignore the request.
-  _, err = user.VerifySession(sessionKey, forceAdmin)
+  err = user.VerifySession(sessionKey, newUser.UserId, forceAdmin)
   if err != nil {
     ok = false
   }
@@ -255,6 +261,7 @@ func CreateUserSession(newUser *user.UserEntry, w http.ResponseWriter, r *http.R
   }
   
   session.Values["key"] = sessionKey
+  session.Values["user"] = newUser.UserId
   err = session.Save(r, w)
   if err != nil {
     return err
@@ -281,7 +288,7 @@ func CreateUserSession(newUser *user.UserEntry, w http.ResponseWriter, r *http.R
 
 // 'RemoveUserSession' deletes a user's session key and causes us to no longer accept it as a valid session.
 // Also removes it as a user cookie.
-func RemoveUserSession(key string, w http.ResponseWriter, r *http.Request, forceAdmin bool) error {
+func RemoveUserSession(key string, w http.ResponseWriter, r *http.Request, userId int64, forceAdmin bool) error {
   session, err := LoginStore.Get(r, "user-session")
   if forceAdmin {
     session, err = LoginStore.Get(r, "admin-session")
@@ -291,7 +298,8 @@ func RemoveUserSession(key string, w http.ResponseWriter, r *http.Request, force
     return err
   }
   delete(session.Values, "key")
-  return user.RemoveSessionForUser(key, forceAdmin)
+  delete(session.Values, "user")
+  return user.RemoveSessionForUser(key, userId, forceAdmin)
 }
 
 // LoginRegisterRespondJsonError takes in an error code and an appropriate redirectURL and sends it to the client in JSON form.
