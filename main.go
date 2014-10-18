@@ -6,14 +6,17 @@ import(
   "AfkChampFrontend/controller/admin"
   "AfkChampFrontend/controller/about"
   "AfkChampFrontend/controller"
+  "log"
 )
 
 type AfkChampHandler func(w http.ResponseWriter, req *http.Request)
 
 func main() {
+  // Setup logging
+  log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+
   // Setup the routing for the frontend.
   r := mux.NewRouter()
-  
   // Dynamic Content
   r.HandleFunc("/",controller.HandleHomeRoute)
   r.HandleFunc("/admin",admin.HandleAdminRoute)

@@ -18,6 +18,8 @@ import(
 type LoginRegisterPostData struct {
   Username string
   Password string
+  // Admin determines whether or not the login request is for an admin login
+  Admin string
   Email string
 }
 
@@ -78,7 +80,8 @@ func init() {
 // HandleLoginPageRoute displays a login page if the user is not logged in. Otherwise,
 // the user is redirected to the home page.
 func HandleLoginPageRoute(w http.ResponseWriter, r *http.Request) {
-  if _, err := GetCurrentUser(w, r); err == nil {
+  forceAdmin := r.FormValue("admin") == "true"
+  if _, err := GetCurrentUser(w, r, forceAdmin); err == nil {
     // If we succeed, for whatever reason, it means we're logged in already.
     http.Redirect(w, r, "/", http.StatusFound)
     return
@@ -88,11 +91,16 @@ func HandleLoginPageRoute(w http.ResponseWriter, r *http.Request) {
   TemplateMapping["login/login.html"].ExecuteTemplate(w, "tbase", t)
 }
 
-// HandleLogoutPageRoute logs out the current user and directs him/her back to the home page.
+// HandleLogoutPageRoute logs out the current user and directs him/her back to the home page. Removes any admin sessions as well
 func HandleLogoutPageRoute(w http.ResponseWriter, r *http.Request) {
-  if sessionKey, err := GetUserSession(w, r); err == nil {
-    RemoveUserSession(sessionKey, w, r)
+  if sessionKey, err := GetUserSession(w, r, false); err == nil {
+    RemoveUserSession(sessionKey, w, r, false)
   }
+  
+  if sessionKey, err := GetUserSession(w, r, true); err == nil {
+    RemoveUserSession(sessionKey, w, r, true)
+  }
+  
   http.Redirect(w, r, "/", http.StatusFound)
 }
 
@@ -100,7 +108,7 @@ func HandleLogoutPageRoute(w http.ResponseWriter, r *http.Request) {
 // HandlRegisterPageRoute displays the registration page if the user is not logged in. Otherwise, the 
 // user is redirected to the home page.
 func HandleRegisterPageRoute(w http.ResponseWriter, r *http.Request) {
-  if _, err := GetCurrentUser(w, r); err == nil {
+  if _, err := GetCurrentUser(w, r, false); err == nil {
     // If we succeed, for whatever reason, it means we're logged in already.
     http.Redirect(w, r, "/", http.StatusFound)
     return
@@ -112,17 +120,18 @@ func HandleRegisterPageRoute(w http.ResponseWriter, r *http.Request) {
 // HandleLoginAction takes in the user's name and password and checks whether or not they are registered. Sets 
 // relevant information in the cookie store to remember the user's session. This fails if the user is logged in already.
 func HandleLoginAction(w http.ResponseWriter, r *http.Request) {
-  if _, err := GetCurrentUser(w, r); err == nil {
-    // If we succeed, for whatever reason, it means we're logged in already.
-    LoginRegisterRespondJsonError(ErrorAlreadyLoggedIn, "/", w)
-    return
-  }
-  
   userData := LoginRegisterPostData{}
   err := utility.ReadJsonFromRequestBodyStruct(r, &userData)
   if err != nil {
     log.Print(err)
     LoginRegisterRespondJsonError(ErrorUnspecifiedError, "", w)
+    return
+  }
+  
+  isAdminRequest := (userData.Admin == "true")
+  if _, err := GetCurrentUser(w, r, isAdminRequest); err == nil {
+    // If we succeed, for whatever reason, it means we're logged in already.
+    LoginRegisterRespondJsonError(ErrorAlreadyLoggedIn, "/", w)
     return
   }
  
@@ -132,20 +141,24 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request) {
     return
   }
   
-  err = CreateUserSession(newUser, w, r)
+  err = CreateUserSession(newUser, w, r, isAdminRequest)
   if err != nil {
     log.Print(err)
     LoginRegisterRespondJsonError(ErrorUnspecifiedError, "/login", w)
     return
   }
   // Success!
-  LoginRegisterRespondJsonError(ErrorNoError, "/", w)
+  if isAdminRequest {
+    LoginRegisterRespondJsonError(ErrorNoError, "/admin", w)
+  } else {
+    LoginRegisterRespondJsonError(ErrorNoError, "/", w)
+  }
 }
 
 // HandleRegisterAction allows you to register a new user given a username and password. If registration is successful, also
 // set relevant information in the user's cookies to remember their session. This fails if the user is logged in already.
 func HandleRegisterAction(w http.ResponseWriter, r *http.Request) {
-  if _, err := GetCurrentUser(w, r); err == nil {
+  if _, err := GetCurrentUser(w, r, false); err == nil {
     // If we succeed, for whatever reason, it means we're logged in already.
     LoginRegisterRespondJsonError(ErrorAlreadyLoggedIn, "/", w)
     return
@@ -170,7 +183,7 @@ func HandleRegisterAction(w http.ResponseWriter, r *http.Request) {
     LoginRegisterRespondJsonError(ErrorUnspecifiedError, "", w)
     return
   }
-  err = CreateUserSession(newUser, w, r)
+  err = CreateUserSession(newUser, w, r, false)
   if err != nil {
     log.Print(err)
     LoginRegisterRespondJsonError(ErrorUnspecifiedError, "", w)
@@ -181,12 +194,12 @@ func HandleRegisterAction(w http.ResponseWriter, r *http.Request) {
 }
 
 // 'GetCurrentUser' will retrieve the currently logged in user.
-func GetCurrentUser(w http.ResponseWriter, r *http.Request) (*user.UserEntry, error) {
-  sessionKey, err := GetUserSession(w, r)
+func GetCurrentUser(w http.ResponseWriter, r *http.Request, forceAdmin bool) (*user.UserEntry, error) {
+  sessionKey, err := GetUserSession(w, r, forceAdmin)
   if err != nil {
     return nil, err 
   }
-  userId, err := user.VerifySession(sessionKey)
+  userId, err := user.VerifySession(sessionKey, forceAdmin)
   if err != nil {
     return nil, err
   }
@@ -194,8 +207,12 @@ func GetCurrentUser(w http.ResponseWriter, r *http.Request) (*user.UserEntry, er
 }
 
 // 'GetUserSession' gets the current user's session (if the user has logged in before hand and we stored the session cookie).
-func GetUserSession(w http.ResponseWriter, r *http.Request) (string, error) {
+func GetUserSession(w http.ResponseWriter, r *http.Request, forceAdmin bool) (string, error) {
   session, err := LoginStore.Get(r, "user-session")
+  if forceAdmin {
+    session, err = LoginStore.Get(r, "admin-session")
+  }
+  
   if err != nil {
     return "", err
   }
@@ -208,47 +225,73 @@ func GetUserSession(w http.ResponseWriter, r *http.Request) (string, error) {
 
 // 'CreateUserSession' takes in a given user and creates a new session cookie for the user. This function
 // will clear any session cookie already set.
-func CreateUserSession(newUser *user.UserEntry, w http.ResponseWriter, r *http.Request) error {
+func CreateUserSession(newUser *user.UserEntry, w http.ResponseWriter, r *http.Request, forceAdmin bool) error {
   session, err := LoginStore.Get(r, "user-session")
+  if forceAdmin && newUser.IsAdmin {
+    session, err = LoginStore.Get(r, "admin-session")
+  } else {
+    forceAdmin = false
+  }
+  
+  // AFTER THIS POINT: forceAdmin is a boolean that determines whether or not we are currently trying to create an admin session.
   if err != nil {
     return err
   }
-  sessionKey, ok := session.Values["key"]
-  // Remove session key if one exists already
-  if ok {
-    sessionKeyStr := sessionKey.(string)
-    err = RemoveUserSession(sessionKeyStr, w, r)
-    if err != nil {
-      return err
-    }
+  // Keep session key if one exists already
+  sessionKey, ok := session.Values["key"].(string)
+  
+  // If this is a valid key, then we can keep it otherwise we want to make a new one.
+  // If we have a valid key already, then we can just ignore the request.
+  _, err = user.VerifySession(sessionKey, forceAdmin)
+  if err != nil {
+    ok = false
   }
   
-  // Generate a new session key.
-  newSessionKey := uuid.New()
-  session.Values["key"] = newSessionKey
+  // Generate a new session key if necessary
+  if !ok {
+    sessionKey = uuid.New()
+  } else {
+    return nil
+  }
+  
+  session.Values["key"] = sessionKey
   err = session.Save(r, w)
   if err != nil {
     return err
   }
   
-  // Associate key with the user for 3 months.
+  // Associate key with the user for 3 months. Admin keys only last one day.
   expirationTime := time.Now().AddDate(0,3,0)
-  err = user.AddSessionForUser(newUser, newSessionKey, &expirationTime)
+  if forceAdmin {
+    expirationTime = time.Now().AddDate(0,0,1)
+  }
+  
+  err = user.AddSessionForUser(newUser, sessionKey, &expirationTime, forceAdmin)
   if err != nil {
     return err 
   }
+  
+  // Successfully created the user key. However, if we just made an admin key, we also want to make sure they get a user key too.
+  if forceAdmin {
+    return CreateUserSession(newUser, w, r, false)
+  }
+  
   return nil
 }
 
 // 'RemoveUserSession' deletes a user's session key and causes us to no longer accept it as a valid session.
 // Also removes it as a user cookie.
-func RemoveUserSession(key string, w http.ResponseWriter, r *http.Request) error {
+func RemoveUserSession(key string, w http.ResponseWriter, r *http.Request, forceAdmin bool) error {
   session, err := LoginStore.Get(r, "user-session")
+  if forceAdmin {
+    session, err = LoginStore.Get(r, "admin-session")
+  }
+  
   if err != nil {
     return err
   }
   delete(session.Values, "key")
-  return user.RemoveSessionForUser(key)
+  return user.RemoveSessionForUser(key, forceAdmin)
 }
 
 // LoginRegisterRespondJsonError takes in an error code and an appropriate redirectURL and sends it to the client in JSON form.

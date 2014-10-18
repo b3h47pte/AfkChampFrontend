@@ -1,4 +1,7 @@
-var rocketelo = angular.module('rocketelo', ['ui.utils']);
+var rocketelo = angular.module('rocketelo', ['ui.utils', 'ngRoute']).
+  config(function($locationProvider) {
+    $locationProvider.html5Mode(true);
+  });
 
 rocketelo.controller('MainBodyController', function($scope) {
   var flashMessage = "";

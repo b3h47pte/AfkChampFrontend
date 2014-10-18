@@ -1,10 +1,16 @@
-rocketelo.controller('LoginController', function($scope, $http, $window) {
+rocketelo.controller('LoginController', function($scope, $http, $window, $location) {
   $scope.loginSucceed = true;
   $scope.usernameError = false;
   
   // LOGIN FUNCTIONALITY
   $scope.login = function(user) {
-    $http.post('/login', {"username": user.username, "password": user.password}).
+    var urlQuery = $location.search();
+    var adminQuery = "";
+    if (!jQuery.isEmptyObject(urlQuery)) {
+      adminQuery = urlQuery.admin;
+    }
+    
+    $http.post('/login', {"username": user.username, "password": user.password, "admin": adminQuery}).
       success(function(data, status, headers, config) {
         // Successful login so just do a redirect to wherever the server tells us to go to 
         $window.location.href = data.RedirectUrl;
