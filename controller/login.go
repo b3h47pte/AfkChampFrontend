@@ -245,11 +245,12 @@ func CreateUserSession(newUser *user.UserEntry, w http.ResponseWriter, r *http.R
   }
   // Keep session key if one exists already
   sessionKey, ok := session.Values["key"].(string)
+  existingUserId, ok := session.Values["user"].(int64)
   
   // If this is a valid key, then we can keep it otherwise we want to make a new one.
   // If we have a valid key already, then we can just ignore the request.
   err = user.VerifySession(sessionKey, newUser.UserId, forceAdmin)
-  if err != nil {
+  if err != nil && newUser.UserId != existingUserId {
     ok = false
   }
   
