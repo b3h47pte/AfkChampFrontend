@@ -37,9 +37,18 @@ func VerifySession(sessionKey string, isAdmin bool) (int64, error) {
   row := model.Database.QueryRowx("SELECT * FROM sessions WHERE sessionid = ? AND isadmin = ?", sessionKey, isAdmin)
   sessionRow := SessionEntry{}
   err := row.StructScan(&sessionRow)
+    
   if err != nil {
     return -1, err
   }
+  
+  // If the session is expired, delete it and fail.
+  currentTime := time.Now()
+  if sessionRow.Expiration.After(currentTime) {
+    RemoveSessionForUser(sessionKey, isAdmin)
+    return -1, NoSessionError
+  }
+  
   return sessionRow.UserId, nil
 }
 
