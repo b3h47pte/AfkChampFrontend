@@ -2,4 +2,26 @@
 <<end>>
 
 <<define "tbody">>
+<div class="container">
+  <a href="/admin/games/new" class="btn btn-success">New</a>
+</div>
+<table class="table">
+<tr>
+  <td>Game ID</td>
+  <td>Game Name</td>
+  <td>Game Short Name</td>
+  <td>Actions</td>
+</tr>
+<<range .Games>>
+<tr>
+  <td><<.GameId>></td>
+  <td><<.GameName>></td>
+  <td><<.GameShorthand>></td>
+  <td>
+    <a href="/admin/games/<<.GameShorthand>>" class="btn btn-primary">Edit</a>
+    <a href="/admin/games/<<.GameShorthand>>" class="btn btn-danger">Delete</a>
+  </td>
+</tr>
+<<end>>
+</table>
 <<end>>
