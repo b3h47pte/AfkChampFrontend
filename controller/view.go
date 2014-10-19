@@ -21,6 +21,11 @@ func init() {
   TemplateMapping["about/about.html"] = template.Must(template.New("about/about.html").Delims("<<", ">>").ParseFiles("html/base.html", "html/about/about.html"))
   TemplateMapping["login/login.html"] = template.Must(template.New("login/login.html").Delims("<<", ">>").ParseFiles("html/base.html", "html/login/login.html"))
   TemplateMapping["login/register.html"] = template.Must(template.New("login/register.html").Delims("<<", ">>").ParseFiles("html/base.html", "html/login/register.html"))
+  
+  // Admin Templates
+  TemplateMapping["admin/admin.html"] = template.Must(template.New("login/register.html").Delims("<<", ">>").ParseFiles("html/adminBase.html", "html/admin/admin.html"))
+  TemplateMapping["admin/game/index.html"] = template.Must(template.New("admin/game/index.html").Delims("<<", ">>").ParseFiles("html/adminBase.html","html/admin/game/index.html"))
+  TemplateMapping["admin/user/index.html"] = template.Must(template.New("admin/user/index.html").Delims("<<", ">>").ParseFiles("html/adminBase.html", "html/admin/user/index.html"))
 }
 
 func CreateTemplateData() BaseTemplateData {

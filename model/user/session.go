@@ -39,7 +39,6 @@ func VerifySession(sessionKey string, userId int64, isAdmin bool) error {
     sessionKey, userId, isAdmin)
   sessionRow := SessionEntry{}
   err := row.StructScan(&sessionRow)
-    
   if err != nil {
     return err
   }

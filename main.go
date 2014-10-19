@@ -20,6 +20,11 @@ func main() {
   // Dynamic Content
   r.HandleFunc("/",controller.HandleHomeRoute)
   r.HandleFunc("/admin",admin.HandleAdminRoute)
+  r.HandleFunc("/admin/games",admin.HandleAdminGamePageRoute)
+  r.HandleFunc("/admin/games/{gameName}",admin.HandleAdminGameRoute)
+  r.HandleFunc("/admin/games/{gameName}/{eventName}",admin.HandleAdminEventRoute)
+  r.HandleFunc("/admin/users",admin.HandleAdminUserPageRoute)
+  r.HandleFunc("/admin/users/{username}",admin.HandleAdminUserRoute)
   r.HandleFunc("/login",controller.HandleLoginPageRoute).Methods("GET")
   r.HandleFunc("/login",controller.HandleLoginAction).Methods("POST")
   r.HandleFunc("/register",controller.HandleRegisterPageRoute).Methods("GET")

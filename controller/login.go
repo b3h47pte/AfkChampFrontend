@@ -232,25 +232,22 @@ func GetUserSession(w http.ResponseWriter, r *http.Request, forceAdmin bool) (st
 // 'CreateUserSession' takes in a given user and creates a new session cookie for the user. This function
 // will clear any session cookie already set.
 func CreateUserSession(newUser *user.UserEntry, w http.ResponseWriter, r *http.Request, forceAdmin bool) error {
-  session, err := LoginStore.Get(r, "user-session")
+  session, _ := LoginStore.Get(r, "user-session")
   if forceAdmin && newUser.IsAdmin {
-    session, err = LoginStore.Get(r, "admin-session")
+    session, _ = LoginStore.Get(r, "admin-session")
   } else {
     forceAdmin = false
   }
   
   // AFTER THIS POINT: forceAdmin is a boolean that determines whether or not we are currently trying to create an admin session.
-  if err != nil {
-    return err
-  }
   // Keep session key if one exists already
   sessionKey, ok := session.Values["key"].(string)
   existingUserId, ok := session.Values["user"].(int64)
   
   // If this is a valid key, then we can keep it otherwise we want to make a new one.
   // If we have a valid key already, then we can just ignore the request.
-  err = user.VerifySession(sessionKey, newUser.UserId, forceAdmin)
-  if err != nil && newUser.UserId != existingUserId {
+  err := user.VerifySession(sessionKey, newUser.UserId, forceAdmin)
+  if err != nil || newUser.UserId != existingUserId {
     ok = false
   }
   

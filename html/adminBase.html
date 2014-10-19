@@ -1,0 +1,42 @@
+<<define "tbase">>
+<html ng-app="rocketelo">
+<head>
+<title><<.Data.WebsiteName>></title>
+<base href="/"></base>
+<script src="/javascript/external/jquery-2.1.1.js"></script>
+<script src="/javascript/external/angular.js"></script>
+<script src="/javascript/external/angular-route.js"></script>
+<script src="/javascript/external/bootstrap.js"></script>
+<script src="/javascript/external/ui-utils.js" type="text/javascript" charset="utf-8"></script>
+<script src="/javascript/admin/home.js"></script>
+<link rel="stylesheet" href="/css/external/bootstrap.min.css">
+<link rel="stylesheet" href="/css/adminMain.css">
+<<template "thead" .>>
+</head>
+<body ng-controller="MainBodyController">
+<!-- Admin Toolbar -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<div class="container">
+  <ul class="nav navbar-nav">
+    <li><a href="/admin">Home</a></li>
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Games<span class="caret"></span></a>
+      <ul class="dropdown-menu" role="menu">
+        <li><a href="/admin/games/league">League of Legends</a></li>
+      </ul>
+    </li>
+    
+    <li><a href="/admin/users">Users</a></li>
+  </ul>
+</div>
+</nav>
+
+
+<!-- Flash message -->
+<div ng-show="getFlashMessage()"> 
+  <div class="alert alert-danger" role="alert">{{getFlashMessage()}}</div>
+</div>
+<<template "tbody" .>>
+</body>
+<html>
+<<end>>
