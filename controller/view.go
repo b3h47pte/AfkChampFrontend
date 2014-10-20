@@ -24,7 +24,14 @@ func init() {
   
   // Admin Templates
   TemplateMapping["admin/admin.html"] = template.Must(template.New("login/register.html").Delims("<<", ">>").ParseFiles("html/adminBase.html", "html/admin/admin.html"))
+  
+  // Admin Games
   TemplateMapping["admin/game/index.html"] = template.Must(template.New("admin/game/index.html").Delims("<<", ">>").ParseFiles("html/adminBase.html","html/admin/game/index.html"))
+  TemplateMapping["admin/game/newedit.html"] = template.Must(template.New("admin/game/newedit.html").Delims("<<", ">>").ParseFiles("html/adminBase.html","html/admin/game/newedit.html"))
+  
+  // Admin Events
+  
+  // Admin Users
   TemplateMapping["admin/user/index.html"] = template.Must(template.New("admin/user/index.html").Delims("<<", ">>").ParseFiles("html/adminBase.html", "html/admin/user/index.html"))
 }
 

@@ -3,7 +3,7 @@
 
 <<define "tbody">>
 <div class="container">
-  <a href="/admin/games/new" class="btn btn-success">New</a>
+  <a href="/admin/game/new" class="btn btn-success">New</a>
 </div>
 <table class="table">
 <tr>
@@ -18,8 +18,8 @@
   <td><<.GameName>></td>
   <td><<.GameShorthand>></td>
   <td>
-    <a href="/admin/games/<<.GameShorthand>>/edit" class="btn btn-primary">Edit</a>
-    <a href="/admin/games/<<.GameShorthand>>/delete" class="btn btn-danger">Delete</a>
+    <a href="/admin/game/<<.GameShorthand>>" class="btn btn-primary">Edit</a>
+    <a href="/admin/game/<<.GameShorthand>>/delete" class="btn btn-danger">Delete</a>
   </td>
 </tr>
 <<end>>

@@ -1,0 +1,24 @@
+<<define "thead">>
+<<end>>
+
+<<define "tbody">>
+<span>
+<<if .IsNewGame>>
+  <h1>NEW GAME</h1>
+<<else>>
+  <h1>EDIT GAME: <<.SelectedGame.GameName>></h1>
+<<end>>
+</span>
+
+<form name="gameForm">
+  <div>
+    <label>Game Name:</label>
+    <input type="text" name="gameName" ng-model="game.gameName" ng-init="game.gameName = '<<.SelectedGame.GameName>>'" required></input>
+  </div>
+
+  <div>
+    <label>Game Short Name:</label>
+    <input type="text" name="gameShorthand" ng-model="game.gameShorthand" ng-init="game.gameShorthand = '<<.SelectedGame.GameShorthand>>'" required></input>
+  </div>
+</form>
+<<end>>

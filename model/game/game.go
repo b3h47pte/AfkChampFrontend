@@ -21,7 +21,7 @@ func GetGames(offset int, count int) ([]GameRow, error) {
   requestGames := make([]GameRow, 0, 0)
   
   // Find the games
-  rows, err := model.Database.Queryx("SELECT * FROM games")
+  rows, err := model.Database.Queryx("SELECT * FROM games ORDER BY gameid ASC")
   if err != nil {
     return nil, err
   }
@@ -37,4 +37,15 @@ func GetGames(offset int, count int) ([]GameRow, error) {
   }
   
   return requestGames, nil
+}
+
+// 'GetGame' takes in a given game short  name and returns the matching game contained in a GameRow
+func GetGame(shortname string) (*GameRow, error) {
+  row := model.Database.QueryRowx("SELECT * FROM games WHERE gameshorthand = ?", shortname)
+  newGame := GameRow{}
+  err := row.StructScan(&newGame)
+  if err != nil {
+    return nil, err
+  }
+  return &newGame, nil
 }
