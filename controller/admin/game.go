@@ -127,6 +127,9 @@ func CreateBaseGameAdminTemplateData() *AdminGameTemplateData {
 // 'HandleNewEditGamePost' handles POST requests for either new and/or edit requests. For both requests, we do a check to see if the game already exists, but in the new case, it it already exists, we fail while in the edit
 // case, if it doesn't exist, we fail.
 func HandleNewEditGamePost(w http.ResponseWriter, r *http.Request) {
+  if err := RequireAdminRelogin(w, r); err != nil {
+    return
+  }
   gameData := AdminGameNewEditPostData{}
   err := utility.ReadJsonFromRequestBodyStruct(r, &gameData)
   if err != nil {
@@ -181,6 +184,21 @@ func NewEditGameRespondJsonError(errorCode GameNewEditErrorCode, w http.Response
     log.Print(err)
     return
   }
+}
+
+// 'HandleAdminGameDeleteRoute' deletes the specified game.
+func HandleAdminGameDeleteRoute(w http.ResponseWriter, r *http.Request) {
+  if err := RequireAdminRelogin(w, r); err != nil {
+    return
+  }
+  gameVars := mux.Vars(r)
+  // We are guaranteed to get a gamename because it's in the route.
+  gameName, _ := gameVars["gameName"]
+  if err := game.DeleteGame(gameName); err != nil {
+    log.Print(err)
+  }
+  
+  http.Redirect(w, r, "/admin/game", http.StatusFound)
 }
 
 // 'getErrorCodeFromGameError' takes in a game error code and returns a HTTP error code along with it.

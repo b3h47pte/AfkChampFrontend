@@ -67,3 +67,12 @@ func UpdateGame(oldGame string, newGame *GameRow) error {
   }
   return nil
 }
+
+// 'DeleteGame' removes the game from the database
+func DeleteGame(shortname string) error {
+  _, err := model.Database.Exec("DELETE FROM games WHERE gameshorthand = ?", shortname)
+  if err != nil {
+    return err
+  }
+  return nil
+}
