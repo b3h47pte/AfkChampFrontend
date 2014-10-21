@@ -1,4 +1,5 @@
 <<define "thead">>
+  <script src="/javascript/admin/game/editgame.js"></script>
 <<end>>
 
 <<define "tbody">>
@@ -10,15 +11,26 @@
 <<end>>
 </span>
 
-<form name="gameForm">
+<form name="gameForm" ng-controller="EditGameController">
   <div>
     <label>Game Name:</label>
-    <input type="text" name="gameName" ng-model="game.gameName" ng-init="game.gameName = '<<.SelectedGame.GameName>>'" required></input>
+    <input type="text" name="gameName" ng-model="game.gameName" ng-init="game.gameName = '<<.SelectedGame.GameName>>'" 
+           ng-maxlength="<<.GameNameCharLimit>>" required></input>
+    <span ng-show="gameForm.gameName.$error.required && !gameForm.gameName.$pristine">Required</span>
+    <span ng-show="gameForm.gameName.$error.maxlength && !gameForm.gameName.$pristine">Surpassed maximum length of <<.GameNameCharLimit>> characters.</span>
   </div>
 
   <div>
     <label>Game Short Name:</label>
-    <input type="text" name="gameShorthand" ng-model="game.gameShorthand" ng-init="game.gameShorthand = '<<.SelectedGame.GameShorthand>>'" required></input>
+    <input type="text" name="gameShorthand" ng-model="game.gameShorthand" ng-init="game.gameShorthand = '<<.SelectedGame.GameShorthand>>'" 
+           ng-maxlength="<<.GameShorthandCharLimit>>" required></input>
+    <span ng-show="gameForm.gameShorthand.$error.required && !gameForm.gameShorthand.$pristine">Required</span>
+    <span ng-show="gameForm.gameShorthand.$error.maxlength && !gameForm.gameShorthand.$pristine">Surpassed maximum length of <<.GameShorthandCharLimit>> characters.</span>
+  </div>
+
+  <div>
+    <button ng-click="save(game, <<.IsNewGame>>, '<<.OldGameShorthand>>')" ng-disabled="gameForm.$invalid" class="btn btn-primary">Save</button>
+    <a class="btn btn-danger" href="/register">Delete</a>
   </div>
 </form>
 <<end>>

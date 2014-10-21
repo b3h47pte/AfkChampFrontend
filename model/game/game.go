@@ -49,3 +49,21 @@ func GetGame(shortname string) (*GameRow, error) {
   }
   return &newGame, nil
 }
+
+// 'CreateGame' takes in a GameRow struct and inserts it into the database.
+func CreateGame(newGame *GameRow) error {
+  _ , nerr := model.Database.Exec("INSERT INTO games (gamename, gameshorthand) VALUES (?, ?)", newGame.GameName, newGame.GameShorthand)
+  if nerr != nil {
+    return nerr
+  }
+  return nil
+}
+
+// 'UpdateGame' takes in an old game shorthand and new GameRow struct and makes the properties of the old game struct match the new game struct.
+func UpdateGame(oldGame string, newGame *GameRow) error {
+  _ , nerr := model.Database.Exec("UPDATE games SET gamename = ?, gameshorthand = ? WHERE gameshorthand = ?", newGame.GameName, newGame.GameShorthand, oldGame)
+  if nerr != nil {
+    return nerr
+  }
+  return nil
+}

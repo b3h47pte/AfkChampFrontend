@@ -25,13 +25,13 @@ type LoginRegisterPostData struct {
 
 type LoginRegisterErrorCode int
 const (
-  ErrorNoError LoginRegisterErrorCode = iota
-  ErrorInvalidRegisterUserName
-  ErrorInvalidRegisterPassword
-  ErrorInvalidRegisterEmail
-  ErrorInvalidLoginCredentials
-  ErrorAlreadyLoggedIn
-  ErrorUnspecifiedError
+  errorNoError LoginRegisterErrorCode = iota
+  errorInvalidRegisterUserName
+  errorInvalidRegisterPassword
+  errorInvalidRegisterEmail
+  errorInvalidLoginCredentials
+  errorAlreadyLoggedIn
+  errorUnspecifiedError
 )
 
 type LoginRegisterResponse struct {
@@ -124,34 +124,34 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request) {
   err := utility.ReadJsonFromRequestBodyStruct(r, &userData)
   if err != nil {
     log.Print(err)
-    LoginRegisterRespondJsonError(ErrorUnspecifiedError, "", w)
+    LoginRegisterRespondJsonError(errorUnspecifiedError, "", w)
     return
   }
   
   isAdminRequest := (userData.Admin == "true")
   if _, err := GetCurrentUser(w, r, isAdminRequest); err == nil {
     // If we succeed, for whatever reason, it means we're logged in already.
-    LoginRegisterRespondJsonError(ErrorAlreadyLoggedIn, "/", w)
+    LoginRegisterRespondJsonError(errorAlreadyLoggedIn, "/", w)
     return
   }
  
   newUser, err := user.VerifyUser(userData.Username, userData.Password)
   if err != nil {
-    LoginRegisterRespondJsonError(ErrorInvalidLoginCredentials, "", w)
+    LoginRegisterRespondJsonError(errorInvalidLoginCredentials, "", w)
     return
   }
   
   err = CreateUserSession(newUser, w, r, isAdminRequest)
   if err != nil {
     log.Print(err)
-    LoginRegisterRespondJsonError(ErrorUnspecifiedError, "/login", w)
+    LoginRegisterRespondJsonError(errorUnspecifiedError, "/login", w)
     return
   }
   // Success!
   if isAdminRequest {
-    LoginRegisterRespondJsonError(ErrorNoError, "/admin", w)
+    LoginRegisterRespondJsonError(errorNoError, "/admin", w)
   } else {
-    LoginRegisterRespondJsonError(ErrorNoError, "/", w)
+    LoginRegisterRespondJsonError(errorNoError, "/", w)
   }
 }
 
@@ -160,14 +160,14 @@ func HandleLoginAction(w http.ResponseWriter, r *http.Request) {
 func HandleRegisterAction(w http.ResponseWriter, r *http.Request) {
   if _, err := GetCurrentUser(w, r, false); err == nil {
     // If we succeed, for whatever reason, it means we're logged in already.
-    LoginRegisterRespondJsonError(ErrorAlreadyLoggedIn, "/", w)
+    LoginRegisterRespondJsonError(errorAlreadyLoggedIn, "/", w)
     return
   }
   
   userData := LoginRegisterPostData{}
   err := utility.ReadJsonFromRequestBodyStruct(r, &userData)
   if err != nil {
-    LoginRegisterRespondJsonError(ErrorUnspecifiedError, "", w)
+    LoginRegisterRespondJsonError(errorUnspecifiedError, "", w)
     return
   }
   
@@ -175,22 +175,22 @@ func HandleRegisterAction(w http.ResponseWriter, r *http.Request) {
   switch {
   case err == user.UserExistsError:
     // Case where we need to inform user
-    LoginRegisterRespondJsonError(ErrorInvalidRegisterUserName, "", w)
+    LoginRegisterRespondJsonError(errorInvalidRegisterUserName, "", w)
     return
   case err != nil:
     // Just keep a mental note to ourself but display another error to the user
     log.Print(err)
-    LoginRegisterRespondJsonError(ErrorUnspecifiedError, "", w)
+    LoginRegisterRespondJsonError(errorUnspecifiedError, "", w)
     return
   }
   err = CreateUserSession(newUser, w, r, false)
   if err != nil {
     log.Print(err)
-    LoginRegisterRespondJsonError(ErrorUnspecifiedError, "", w)
+    LoginRegisterRespondJsonError(errorUnspecifiedError, "", w)
     return
   }
   // Assume success and redirect to front page
-  LoginRegisterRespondJsonError(ErrorNoError, "/", w)
+  LoginRegisterRespondJsonError(errorNoError, "/", w)
 }
 
 // 'GetCurrentUser' will retrieve the currently logged in user.
@@ -303,7 +303,7 @@ func RemoveUserSession(key string, w http.ResponseWriter, r *http.Request, userI
 // LoginRegisterRespondJsonError takes in an error code and an appropriate redirectURL and sends it to the client in JSON form.
 func LoginRegisterRespondJsonError(errorCode LoginRegisterErrorCode, redirectUrl string, w http.ResponseWriter) {
   response := LoginRegisterResponse{ErrorCode: errorCode, RedirectUrl: redirectUrl}
-  if errorCode != ErrorNoError {
+  if errorCode != errorNoError {
     htmlErrCode, errString := getErrorCodeFromLoginError(errorCode)
     http.Error(w, errString, htmlErrCode)
   }
@@ -318,11 +318,11 @@ func LoginRegisterRespondJsonError(errorCode LoginRegisterErrorCode, redirectUrl
 
 func getErrorCodeFromLoginError(errorCode LoginRegisterErrorCode) (int, string) {
   switch errorCode {
-  case ErrorInvalidRegisterUserName, ErrorInvalidRegisterPassword, ErrorInvalidRegisterEmail, ErrorInvalidLoginCredentials:
+  case errorInvalidRegisterUserName, errorInvalidRegisterPassword, errorInvalidRegisterEmail, errorInvalidLoginCredentials:
     return 401, ""
-  case ErrorAlreadyLoggedIn:
+  case errorAlreadyLoggedIn:
     return 403, ""
-  case ErrorUnspecifiedError:
+  case errorUnspecifiedError:
     return 500, ""
   default:
     return 200, ""

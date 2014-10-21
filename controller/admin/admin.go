@@ -6,20 +6,10 @@ package admin
 import(
   "net/http"
   "AfkChampFrontend/controller"
-  "AfkChampFrontend/model/game"
 )
 
 type AdminTemplateData struct {
   Data controller.BaseTemplateData
-  SelectedUser interface{}
-  Users []interface{}
-  
-  SelectedEvent interface{}
-  Events []interface{}
-  
-  SelectedGame game.GameRow
-  Games []game.GameRow
-  IsNewGame bool
 }
 
 const DefaultPageSize = 15
