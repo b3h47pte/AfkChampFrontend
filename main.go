@@ -19,14 +19,18 @@ func main() {
   r := mux.NewRouter()
   // Dynamic Content
   r.HandleFunc("/",controller.HandleHomeRoute).Methods("GET")
+  
+  // ADMIN
   r.HandleFunc("/admin",admin.HandleAdminRoute).Methods("GET")
   r.HandleFunc("/admin/game",admin.HandleAdminGamePageRoute).Methods("GET")
   r.HandleFunc("/admin/game",admin.HandleNewEditGamePost).Methods("POST")
   r.HandleFunc("/admin/game/new",admin.HandleAdminGameNewRoute).Methods("GET")
   r.HandleFunc("/admin/game/{gameName}",admin.HandleAdminGameEditRoute).Methods("GET")
   r.HandleFunc("/admin/game/{gameName}/delete",admin.HandleAdminGameDeleteRoute).Methods("GET")
-  r.HandleFunc("/admin/user",admin.HandleAdminUserPageRoute).Methods("GET")
+  r.HandleFunc("/admin/user",admin.HandleAdminUserIndexPageRoute).Methods("GET")
   r.HandleFunc("/admin/user/{username}",admin.HandleAdminUserRoute).Methods("GET")
+  
+  // MAIN PAGE
   r.HandleFunc("/login",controller.HandleLoginPageRoute).Methods("GET")
   r.HandleFunc("/login",controller.HandleLoginAction).Methods("POST")
   r.HandleFunc("/register",controller.HandleRegisterPageRoute).Methods("GET")

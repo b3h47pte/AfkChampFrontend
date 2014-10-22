@@ -92,6 +92,29 @@ func getUser(username string) (*sqlx.Rows, error) {
   return rows, nil
 }
 
+// 'IndexUsers' let's us return a list of users with the list having an arbitrary length and an arbitrary offset.
+func IndexUsers(offset int, count int) ([]UserEntry, error) {
+  requestUsers := make([]UserEntry, 0, 0)
+  
+  // Find the users
+  rows, err := model.Database.Queryx("SELECT * FROM users ORDER BY userid ASC LIMIT ?, ?", offset, count)
+  if err != nil {
+    return nil, err
+  }
+  
+  // Create the GameRow structs and then return it
+  for rows.Next() {
+    newObj := UserEntry{}
+    err = rows.StructScan(&newObj)
+    if err != nil {
+      continue
+    }
+    requestUsers = append(requestUsers, newObj)
+  }
+  
+  return requestUsers, nil
+}
+
 // extractUser extracts a user from the result of 'getUser'. We asssume that there only ever exists one user with a given username.
 func extractUser(inRows *sqlx.Rows) (*UserEntry, error) {
   newUser := UserEntry{}

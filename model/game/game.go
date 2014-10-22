@@ -21,7 +21,7 @@ func GetGames(offset int, count int) ([]GameRow, error) {
   requestGames := make([]GameRow, 0, 0)
   
   // Find the games
-  rows, err := model.Database.Queryx("SELECT * FROM games ORDER BY gameid ASC")
+  rows, err := model.Database.Queryx("SELECT * FROM games ORDER BY gameid ASC LIMIT ?, ?", offset, count)
   if err != nil {
     return nil, err
   }

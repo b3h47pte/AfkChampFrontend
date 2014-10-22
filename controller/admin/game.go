@@ -59,14 +59,8 @@ func HandleAdminGamePageRoute(w http.ResponseWriter, r *http.Request) {
     pageIdx = 0
   }
   
-  // Then figure out how many entries we want
-  entryCount, err := strconv.Atoi(r.FormValue("c"))
-  if err != nil {
-    entryCount = DefaultPageSize
-  }
-  
   // Get a portion of the games. 
-  allGames, err := game.GetGames(pageIdx, entryCount)
+  allGames, err := game.GetGames(pageIdx * DefaultPageSize, DefaultPageSize)
   if err != nil {
     allGames = make([]game.GameRow,0,0)
   }

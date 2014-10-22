@@ -33,12 +33,3 @@ func HandleAdminRoute(w http.ResponseWriter, r *http.Request) {
   t := AdminTemplateData{Data: controller.CreateTemplateData()}
   controller.TemplateMapping["admin/admin.html"].ExecuteTemplate(w, "tbase", t)
 }
-
-// 'HandleAdminUserRoute' presents a list of all users and allows us to view/modify any user properties as necessary.
-func HandleAdminUserPageRoute(w http.ResponseWriter, r *http.Request) {
-}
-
-func HandleAdminUserRoute(w http.ResponseWriter, r *http.Request) {
-//  userVars := mux.Vars(r)
-//  username, ok := userVars["username"]
-}
