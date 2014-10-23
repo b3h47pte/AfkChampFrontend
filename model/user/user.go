@@ -125,6 +125,15 @@ func IndexUsers(offset int, count int) ([]UserEntry, error) {
   return requestUsers, nil
 }
 
+// 'DeleteUser' removes the user from the database
+func DeleteUser(userid int64) error {
+  _, err := model.Database.Exec("DELETE FROM users WHERE userid = ? AND isadmin = ?", userid, false)
+  if err != nil {
+    return err
+  }
+  return nil
+}
+
 // extractUser extracts a user from the result of 'getUser'. We asssume that there only ever exists one user with a given username.
 func extractUser(inRows *sqlx.Rows) (*UserEntry, error) {
   newUser := UserEntry{}

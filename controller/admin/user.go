@@ -96,6 +96,27 @@ func handleAdminUserNewEditPage(w http.ResponseWriter, r *http.Request, isNewUse
   controller.TemplateMapping["admin/user/newedit.html"].ExecuteTemplate(w, "tbase", t)
 }
 
+// 'HandleAdminDeleteUsePage' handles delete requests for a given user.
+func HandleAdminDeleteUsePage(w http.ResponseWriter, r *http.Request) {
+if err := RequireAdminRelogin(w, r); err != nil {
+    return
+  }
+  userVars := mux.Vars(r)
+  // We are guaranteed to get a userid because it's in the route.
+  userid, err := strconv.ParseInt(userVars["userid"], 10, 64)
+  if err != nil {
+    log.Print(err)
+    http.Redirect(w, r, "/admin/user", http.StatusFound)
+    return
+  }
+
+  if err = user.DeleteUser(userid); err != nil {
+    log.Print(err) 
+  }
+  
+  http.Redirect(w, r, "/admin/user", http.StatusFound) 
+}
+
 // 'HandleAdminUserNewEditPost' handles POST requests for new/edit user requests from the admin.
 func HandleAdminUserNewEditPost(w http.ResponseWriter, r *http.Request) {
   if err := RequireAdminRelogin(w, r); err != nil {
