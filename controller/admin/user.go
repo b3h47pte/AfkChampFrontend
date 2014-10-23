@@ -8,12 +8,18 @@ package admin
   "net/http"
   "AfkChampFrontend/controller"
   "AfkChampFrontend/model/user"
-   "strconv"
+  "strconv"
+  "github.com/gorilla/mux"
+  "log"
 )
 
 type AdminUserTemplateData struct {
   Data controller.BaseTemplateData
   Users []user.UserEntry
+  SelectedUser user.UserEntry
+  IsNewUser bool
+  
+  UserNameCharLimit int
 }
 
 
@@ -40,13 +46,42 @@ func HandleAdminUserIndexPageRoute(w http.ResponseWriter, r *http.Request) {
   controller.TemplateMapping["admin/user/index.html"].ExecuteTemplate(w, "tbase", t)
 }
 
-func HandleAdminUserRoute(w http.ResponseWriter, r *http.Request) {
-//  userVars := mux.Vars(r)
-//  username, ok := userVars["username"]
+// 'HandleAdminEditUserRoute' takes in a user and presents properties that we can modify.
+func HandleAdminEditUserRoute(w http.ResponseWriter, r *http.Request) {
+  handleAdminUserNewEditPage(w, r, false)
+}
+
+// 'handleAdminUserNewEditPage' prepares the new/edit page for this specific case.
+// Note: I don't actually have the functionality here to create a new user...that should just be through the register page.
+func handleAdminUserNewEditPage(w http.ResponseWriter, r *http.Request, isNewUserRequest bool) {
+  if err := RequireAdminRelogin(w, r); err != nil {
+    return
+  }
+  
+  // Retrieve relevant user
+  userVars := mux.Vars(r)
+  userid, err := strconv.ParseInt(userVars["userid"], 10, 64)
+  if err != nil {
+    log.Print(err)
+    http.Redirect(w, r, "/admin/user", http.StatusFound)
+    return
+  }
+  
+  selectedUser, err := user.RetrieveUser(userid)
+  if err != nil {
+    log.Print(err)
+    http.Redirect(w, r, "/admin/user", http.StatusFound)
+    return
+  }
+  
+  t := CreateBaseUserAdminTemplateData()
+  t.SelectedUser = *selectedUser
+  controller.TemplateMapping["admin/user/newedit.html"].ExecuteTemplate(w, "tbase", t)
 }
 
 // 'CreateBaseUserAdminTemplateData' creates the template data for rendering.
 func CreateBaseUserAdminTemplateData() *AdminUserTemplateData {
-  t := AdminUserTemplateData{Data: controller.CreateTemplateData()}
+  t := AdminUserTemplateData{Data: controller.CreateTemplateData(),
+                            UserNameCharLimit: user.MaxUsernameLength}
   return &t
 }

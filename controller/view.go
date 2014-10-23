@@ -33,6 +33,7 @@ func init() {
   
   // Admin Users
   TemplateMapping["admin/user/index.html"] = template.Must(template.New("admin/user/index.html").Delims("<<", ">>").ParseFiles("html/adminBase.html", "html/admin/user/index.html"))
+  TemplateMapping["admin/user/newedit.html"] = template.Must(template.New("admin/user/newedit.html").Delims("<<", ">>").ParseFiles("html/adminBase.html", "html/admin/user/newedit.html"))
 }
 
 func CreateTemplateData() BaseTemplateData {

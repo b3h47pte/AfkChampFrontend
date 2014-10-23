@@ -19,8 +19,9 @@ type UserEntry struct {
   Email string
 }
 
-const MinPasswordLength=8
-const MaxEmailLength=254
+const MinPasswordLength = 8
+const MaxEmailLength = 254
+const MaxUsernameLength= 50
 
 const saltByteLength = 8
 const passwordEncryptCost = 12

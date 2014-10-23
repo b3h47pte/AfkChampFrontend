@@ -28,7 +28,7 @@ func main() {
   r.HandleFunc("/admin/game/{gameName}",admin.HandleAdminGameEditRoute).Methods("GET")
   r.HandleFunc("/admin/game/{gameName}/delete",admin.HandleAdminGameDeleteRoute).Methods("GET")
   r.HandleFunc("/admin/user",admin.HandleAdminUserIndexPageRoute).Methods("GET")
-  r.HandleFunc("/admin/user/{username}",admin.HandleAdminUserRoute).Methods("GET")
+  r.HandleFunc("/admin/user/{userid}",admin.HandleAdminEditUserRoute).Methods("GET")
   
   // MAIN PAGE
   r.HandleFunc("/login",controller.HandleLoginPageRoute).Methods("GET")

@@ -1,0 +1,43 @@
+<<define "thead">>
+  <script src="/javascript/admin/user/edituser.js"></script>
+<<end>>
+
+<<define "tbody">>
+<span>
+<<if .IsNewUser>>
+  <h1>NEW USER</h1>
+<<else>>
+  <h1>EDIT USER: <<.SelectedUser.Username>></h1>
+<<end>>
+</span>
+
+<form name="userForm" ng-controller="EditUserController">
+  <div>
+    <label>User Name:</label>
+    <input type="text" name="username" ng-model="user.username" ng-init="user.username = '<<.SelectedUser.Username>>'" 
+           ng-maxlength="<<.UserNameCharLimit>>" required></input>
+    <span ng-show="userForm.username.$error.required && !userForm.username.$pristine">Required</span>
+    <span ng-show="userForm.username.$error.maxlength && !userForm.username.$pristine">Surpassed maximum length of <<.UserNameCharLimit>> characters.</span>
+  </div>
+
+  <div>
+    <label>Is Admin:</label>
+    <input type="checkbox" name="isadmin" ng-model="user.isadmin" ng-init="user.isadmin = '<<.SelectedUser.IsAdmin>>'" ng-checked ="user.isadmin" required></input>
+    <span ng-show="userForm.isadmin.$error.required && !userForm.isadmin.$pristine">Required</span>
+  </div>
+
+  <div>
+    <label>Email:</label>
+    <input type="email" name="email" ng-model="user.email" ng-init="user.email = '<<.SelectedUser.Email>>'" required></input>
+    <span ng-show="userForm.email.$error.required && !userForm.email.$pristine">Required</span>
+  </div>
+
+  <div>
+    <button ng-click="save(user, <<.IsNewUser>>)" ng-disabled="gameForm.$invalid" class="btn btn-primary">Save</button>
+    <<if .IsNewUser>>
+    <<else>>
+      <a class="btn btn-danger" href="/admin/user/<<.SelectedUser.UserId>>/delete">Delete</a>
+    <<end>>
+  </div>
+</form>
+<<end>>
