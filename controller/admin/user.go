@@ -11,6 +11,7 @@ package admin
   "strconv"
   "github.com/gorilla/mux"
   "log"
+  "AfkChampFrontend/utility"
 )
 
 type AdminUserTemplateData struct {
@@ -20,6 +21,22 @@ type AdminUserTemplateData struct {
   IsNewUser bool
   
   UserNameCharLimit int
+}
+
+type AdminUserErrorCode int
+const (
+  errorUserNoError AdminUserErrorCode = iota
+  errorUserInvalidOperation
+  errorUserUnspecifiedError
+)
+
+type AdminUserPostData struct {
+  IsNew bool
+  User user.UserEntry
+}
+
+type AdminUserResponseData struct {
+  ErrorCode AdminUserErrorCode 
 }
 
 
@@ -79,9 +96,66 @@ func handleAdminUserNewEditPage(w http.ResponseWriter, r *http.Request, isNewUse
   controller.TemplateMapping["admin/user/newedit.html"].ExecuteTemplate(w, "tbase", t)
 }
 
+// 'HandleAdminUserNewEditPost' handles POST requests for new/edit user requests from the admin.
+func HandleAdminUserNewEditPost(w http.ResponseWriter, r *http.Request) {
+  if err := RequireAdminRelogin(w, r); err != nil {
+    return
+  }
+  
+  userData := AdminUserPostData{}
+  err := utility.ReadJsonFromRequestBodyStruct(r, &userData)
+  if err != nil {
+    log.Print(err)
+    AdminUserRespondJsonError(errorUserUnspecifiedError, w)
+    return
+  }
+  
+  // "New" requests are bogus. Don't let them happen. [FOR NOW]
+  if userData.IsNew {
+    AdminUserRespondJsonError(errorUserInvalidOperation, w)
+    return
+  }
+  
+  // Modify the user as appropriate.
+  if err = user.UpdateUser(userData.User.UserId, &userData.User); err != nil {
+    log.Print(err)
+    AdminUserRespondJsonError(errorUserUnspecifiedError, w)
+    return 
+  }
+  
+  AdminUserRespondJsonError(errorUserNoError, w)
+}
+
 // 'CreateBaseUserAdminTemplateData' creates the template data for rendering.
 func CreateBaseUserAdminTemplateData() *AdminUserTemplateData {
   t := AdminUserTemplateData{Data: controller.CreateTemplateData(),
                             UserNameCharLimit: user.MaxUsernameLength}
   return &t
+}
+
+// AdminUserRespondJsonError takes in an error code and passes it back to the client in the form of a JSON response.
+func AdminUserRespondJsonError(errorCode AdminUserErrorCode, w http.ResponseWriter) {
+  response := AdminUserResponseData{ErrorCode: errorCode}
+  if errorCode != errorUserNoError {
+    htmlErrCode := getErrorCodeFromUserError(errorCode)
+    http.Error(w, "", htmlErrCode)
+  }
+  
+  // If any error happens here, then the only thing we can redirect the user to is an error page.
+  err := utility.WriteJsonToResponse(w, response)
+  if err != nil {
+    log.Print(err)
+    return
+  }
+}
+
+// 'getErrorCodeFromUserError' takes in a game error code and returns a HTTP error code along with it.
+func getErrorCodeFromUserError(errorCode AdminUserErrorCode) int {
+  switch errorCode {
+  case errorUserUnspecifiedError, errorUserInvalidOperation:
+    return 500
+  default:
+    return 200
+  }
+  return 200
 }

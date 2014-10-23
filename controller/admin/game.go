@@ -20,9 +20,9 @@ const MaxGameShorthandLength = 20
 
 type GameNewEditErrorCode int
 const (
-  errorNoError GameNewEditErrorCode = iota
-  errorInvalidOperation
-  errorUnspecifiedError
+  errorGameNoError GameNewEditErrorCode = iota
+  errorGameInvalidOperation
+  errorGameUnspecifiedError
 )
 
 type AdminGameTemplateData struct {
@@ -127,7 +127,7 @@ func HandleNewEditGamePost(w http.ResponseWriter, r *http.Request) {
   gameData := AdminGameNewEditPostData{}
   err := utility.ReadJsonFromRequestBodyStruct(r, &gameData)
   if err != nil {
-    NewEditGameRespondJsonError(errorUnspecifiedError, w)
+    NewEditGameRespondJsonError(errorGameUnspecifiedError, w)
     return
   }
     
@@ -141,7 +141,7 @@ func HandleNewEditGamePost(w http.ResponseWriter, r *http.Request) {
   // A new game doesn't want the game to exist, an edit game update wants the game to exist
   if gameData.IsNew == (err == nil) {
     log.Print(err)
-    NewEditGameRespondJsonError(errorInvalidOperation, w)
+    NewEditGameRespondJsonError(errorGameInvalidOperation, w)
     return
   }
   
@@ -157,17 +157,17 @@ func HandleNewEditGamePost(w http.ResponseWriter, r *http.Request) {
   
   if err != nil {
     log.Print(err)
-    NewEditGameRespondJsonError(errorUnspecifiedError, w)
+    NewEditGameRespondJsonError(errorGameUnspecifiedError, w)
     return
   }
   
-  NewEditGameRespondJsonError(errorNoError, w)
+  NewEditGameRespondJsonError(errorGameNoError, w)
 }
 
 // NewEditGameRespondJsonError takes in an error code and passes it back to the client in the form of a JSON response.
 func NewEditGameRespondJsonError(errorCode GameNewEditErrorCode, w http.ResponseWriter) {
   response := AdminGameNewEditResponseData{ErrorCode: errorCode}
-  if errorCode != errorNoError {
+  if errorCode != errorGameNoError {
     htmlErrCode := getErrorCodeFromGameError(errorCode)
     http.Error(w, "", htmlErrCode)
   }
@@ -198,7 +198,7 @@ func HandleAdminGameDeleteRoute(w http.ResponseWriter, r *http.Request) {
 // 'getErrorCodeFromGameError' takes in a game error code and returns a HTTP error code along with it.
 func getErrorCodeFromGameError(errorCode GameNewEditErrorCode) int {
   switch errorCode {
-  case errorUnspecifiedError, errorInvalidOperation:
+  case errorGameUnspecifiedError, errorGameInvalidOperation:
     return 500
   default:
     return 200

@@ -84,6 +84,15 @@ func CreateUser(username string, password string, email string) (*UserEntry, err
   return &newUser, nil
 }
 
+// UpdateUser takes in a user ID and updates entries accordingly. Note that we DO NOT update the password.
+func UpdateUser(userId int64, userData *UserEntry) error {
+  _ , nerr := model.Database.Exec("UPDATE users SET username = ?, isadmin = ?, email = ? WHERE userid = ?", userData.Username, userData.IsAdmin, userData.Email, userId)
+  if nerr != nil {
+    return nerr
+  }
+  return nil
+}
+
 // getUser executes a query to search for the specified user by username.
 func getUser(username string) (*sqlx.Rows, error) {
   rows, err := model.Database.Queryx("SELECT * FROM users WHERE username = ?", username)
