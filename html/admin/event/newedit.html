@@ -1,0 +1,53 @@
+<<define "thead">>
+  <script src="/javascript/admin/event/editevent.js"></script>
+<<end>>
+
+<<define "tbody">>
+<span>
+<<if .IsNewEvent>>
+  <h1>NEW EVENT</h1>
+<<else>>
+  <h1>EDIT EVENT: <<.SelectedEvent.EventName>></h1>
+<<end>>
+</span>
+
+<form name="eventForm" ng-controller="EditEventController">
+  <div>
+    <label>Event Name:</label>
+    <input type="text" name="eventName" ng-model="event.eventName" ng-init="event.eventName= '<<.SelectedEvent.EventName>>'" required></input>
+    <span ng-show="eventForm.eventName.$error.required && !eventForm.eventName.$pristine">Required</span>
+  </div>
+
+  <div>
+    <label>Current Game Name:</label>
+    <input type="text" name="currentGameName" ng-model="event.currentGameName" ng-init="event.currentGameName= '<<.SelectedEvent.CurrentGameName>>'" required></input>
+    <span ng-show="eventForm.currentGameName.$error.required && !eventForm.currentGameName.$pristine">Required</span>
+  </div>
+
+  <div>
+    <label>Event Owner:</label>
+    <input type="text" name="eventOwner" ng-model="event.eventOwner" ng-init="event.eventOwner= '<<.SelectedEvent.EventOwner>>'" required></input>
+    <span ng-show="eventForm.eventOwner.$error.required && !eventForm.eventOwner.$pristine">Required</span>
+  </div>
+
+  <div>
+    <label>Stream URL:</label>
+    <input type="text" name="streamUrl" ng-model="event.streamUrl" ng-init="event.streamUrl= '<<.SelectedEvent.StreamUrl>>'" required></input>
+    <span ng-show="eventForm.streamUrl.$error.required && !eventForm.streamUrl.$pristine">Required</span>
+  </div>
+
+  <div>
+    <label>Event Shorthand:</label>
+    <input type="text" name="eventShorthand" ng-model="event.eventShorthand" ng-init="event.eventShorthand= '<<.SelectedEvent.EventShorthand>>'" required></input>
+    <span ng-show="eventForm.eventShorthand.$error.required && !eventForm.eventShorthand.$pristine">Required</span>
+  </div>
+
+  <div>
+    <button ng-click="save(event)" ng-disabled="eventForm.$invalid" class="btn btn-primary">Save</button>
+    <<if .IsNewEvent>>
+    <<else>>
+    <a class="btn btn-danger" href="/admin/event/<<.SelectedEvent.CurrentGameName>>/<<.SelectedEvent.EventId>>/delete">Delete</a>
+    <<end>>
+  </div>
+</form>
+<<end>>

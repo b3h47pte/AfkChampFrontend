@@ -17,6 +17,75 @@ type EventRow struct {
 	EventShorthand string
 }
 
+type EventRowJoined struct {
+	EventId         int64
+	EventOwner      string
+	EventName       string
+	CurrentGameName string
+	StreamUrl       string
+	EventShorthand  string
+}
+
+// GetEventsJoined returns an array of the 'count' events starting at 'offset' assuming the
+// events are listed by eventID. This returns an array of 'EventRowJoined' which contains
+// the full name of the correspodning owner and game.
+func GetEventsJoined(offset int, count int, gameName string) ([]EventRowJoined, error) {
+	requestedEvents := make([]EventRowJoined, 0, 0)
+
+	// Find Events
+	rows, err := model.Database.Queryx(`SELECT events.eventid AS EventId,
+																						 users.username AS EventOwner,
+																						 events.eventname AS EventName,
+																						 games.gamename AS CurrentGameName,
+																						 events.streamurl AS StreamUrl,
+																						 events.eventshorthand AS EventShorthand
+																			FROM events
+																			INNER JOIN users ON events.ownerid = users.userid
+																			INNER JOIN games on events.currentgameid = games.gameid
+																			ORDER BY events.eventid ASC LIMIT ?, ?`, offset, count)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create structs
+	for rows.Next() {
+		newObj := EventRowJoined{}
+		err = rows.StructScan(&newObj)
+		if err != nil {
+			continue
+		}
+		requestedEvents = append(requestedEvents, newObj)
+	}
+
+	return requestedEvents, nil
+}
+
+// GetEvents returns an array of the 'count' events starting at 'offset' assuming the
+// events are listed by eventID. This returns an array of 'EventRow' and we will not
+// perform a join here.
+func GetEvents(offset int, count int) ([]EventRow, error) {
+	requestedEvents := make([]EventRow, 0, 0)
+
+	// Find Events
+	rows, err := model.Database.Queryx("SELECT * FROM events ORDER BY eventid ASC LIMIT ?, ?",
+		offset, count)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create structs
+	for rows.Next() {
+		newObj := EventRow{}
+		err = rows.StructScan(&newObj)
+		if err != nil {
+			continue
+		}
+		requestedEvents = append(requestedEvents, newObj)
+	}
+
+	return requestedEvents, nil
+}
+
 // AddEvent takes in the event data and adds it to the database
 func AddEvent(newEvent *EventRow) error {
 	_, nerr := model.Database.Exec("INSERT INTO events (ownerid, eventname, currentgameid, streamurl, eventshorthand) VALUES (?, ?, ?, ?, ?)",

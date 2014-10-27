@@ -1,0 +1,33 @@
+<<define "thead">>
+<<end>>
+
+<<define "tbody">>
+<div class="container">
+  <a href="/admin/event/new" class="btn btn-success">New</a>
+</div>
+<table class="table">
+<tr>
+  <td>Event ID</td>
+  <td>Event Name</td>
+  <td>Event Shorthand</td>
+  <td>Current Game</td>
+  <td>Event Owner</td>
+  <td>Stream Url</td>
+  <td>Actions</td>
+</tr>
+<<range .Events>>
+<tr>
+  <td><<.EventId>></td>
+  <td><<.EventName>></td>
+  <td><<.EventShorthand>></td>
+  <td><<.CurrentGameName>></td>
+  <td><<.EventOwner>></td>
+  <td><<.StreamUrl>></td>
+  <td>
+    <a href="/admin/event/<<.EventShorthand>>" class="btn btn-primary">Edit</a>
+    <a href="/admin/event/<<.EventShorthand>>/delete" class="btn btn-danger">Delete</a>
+  </td>
+</tr>
+<<end>>
+</table>
+<<end>>
