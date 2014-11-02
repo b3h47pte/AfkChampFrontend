@@ -121,6 +121,19 @@ func RemoveEvent(eventId int64) error {
 	return nil
 }
 
+// RemoveEventByShorthand removes an event given an event shorthand and game name.
+func RemoveEventByShorthand(eventShorthand string, gameShorthand string) error {
+	_, err := model.Database.Exec(`DELETE events
+																 FROM events 
+																 INNER JOIN games ON games.gameid = events.currentgameid
+																 WHERE events.eventshorthand = ? AND games.gameshorthand = ? `,
+		eventShorthand, gameShorthand)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // ModifyEvent takes in the event ID which we wish to modify and a structure containing the modified properties
 func ModifyEvent(eventId int64, newProperties *EventRow) error {
 	_, nerr := model.Database.Exec("UPDATE events SET ownerid = ?, eventname = ?, currentgameid = ?, streamurl = ?, eventshorthand = ? WHERE eventid = ?",

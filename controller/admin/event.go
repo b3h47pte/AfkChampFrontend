@@ -140,6 +140,23 @@ func HandleAdminEventNewEditPost(w http.ResponseWriter, r *http.Request) {
 	adminEventRespondJsonError(errorEventNoError, w)
 }
 
+// HandleAdminEventDeleteRoute handles the removal of a game.
+func HandleAdminEventDeleteRoute(w http.ResponseWriter, r *http.Request) {
+	if err := RequireAdminRelogin(w, r); err != nil {
+		return
+	}
+	eventVars := mux.Vars(r)
+	// We are guaranteed to get a gamename and event shorthand because it's in the route.
+	gameName, _ := eventVars["gameName"]
+	eventShorthand, _ := eventVars["eventShorthand"]
+
+	err := event.RemoveEventByShorthand(eventShorthand, gameName)
+	if err != nil {
+		log.Print(err)
+	}
+	http.Redirect(w, r, "/admin/event/"+gameName, http.StatusFound)
+}
+
 // 'CreateBaseEventAdminTemplateData' creates the template data for rendering.
 func CreateBaseEventAdminTemplateData() *AdminEventTemplateData {
 	t := AdminEventTemplateData{Data: controller.CreateTemplateData(),

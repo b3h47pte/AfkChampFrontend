@@ -35,6 +35,7 @@ func main() {
 	r.HandleFunc("/admin/event/new", admin.HandleAdminEventNewRoute).Methods("GET")
 	r.HandleFunc("/admin/event/{gameName}", admin.HandleAdminEventIndexRoute).Methods("GET")
 	r.HandleFunc("/admin/event/{gameName}/{eventShorthand}", admin.HandleAdminEventEditRoute).Methods("GET")
+	r.HandleFunc("/admin/event/{gameName}/{eventShorthand}/delete", admin.HandleAdminEventDeleteRoute).Methods("GET")
 
 	// MAIN PAGE
 	r.HandleFunc("/login", controller.HandleLoginPageRoute).Methods("GET")
