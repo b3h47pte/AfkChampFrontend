@@ -1,10 +1,11 @@
-rocketelo.controller('EditEventController', function($scope) {
+rocketelo.controller('EditEventController', function($scope, $http, $window) {
   // CREATE/UPDATE EVENT FUNCTIONALITY
-  $scope.save = function(event) {
-    $http.post('/admin/event', {}).
+  $scope.save = function(event, isnew, origEvent, origGame) {
+    $http.post('/admin/event', {Event: event, IsNew: isnew, 
+        OriginalGameShorthand: origGame , OriginalEventShorthand: origEvent }).
       success(function(data, status, headers, config) {
         // Redirect back to game list
-        $window.location.href = "/admin/event";
+        $window.location.href = "/admin/event/league";
       }).
       
       error(function(data, status, headers, config) {

@@ -17,10 +17,12 @@ import (
 const MaxEventShorthandLength = 20
 
 type AdminEventTemplateData struct {
-	Data          controller.BaseTemplateData
-	Events        []event.EventRowJoined
-	IsNewEvent    bool
-	SelectedEvent event.EventRowJoined
+	Data                  controller.BaseTemplateData
+	Events                []event.EventRowJoined
+	IsNewEvent            bool
+	SelectedEvent         event.EventRowJoined
+	CurrentGameShorthand  string
+	CurrentEventShorthand string
 
 	EventShorthandCharLimit int
 }
@@ -33,8 +35,10 @@ const (
 )
 
 type AdminEventPostData struct {
-	IsNew bool
-	Event event.EventRowJoined
+	IsNew                  bool
+	Event                  event.EventRowJoined
+	OriginalEventShorthand string
+	OriginalGameShorthand  string
 }
 
 type AdminEventResponseData struct {
@@ -60,9 +64,11 @@ func HandleAdminEventIndexRoute(w http.ResponseWriter, r *http.Request) {
 	}
 	allEvents, err := event.GetEventsJoined(pageIdx*DefaultPageSize, DefaultPageSize, gameName)
 	if err != nil {
+		log.Print(err)
 		allEvents = make([]event.EventRowJoined, 0, 0)
 	}
 	t.Events = allEvents
+	t.CurrentGameShorthand = gameName
 	controller.TemplateMapping["admin/event/index.html"].ExecuteTemplate(w, "tbase", t)
 }
 
@@ -98,6 +104,8 @@ func handleAdminEventNewEditRoute(w http.ResponseWriter, r *http.Request, isNew 
 			return
 		}
 		t.SelectedEvent = *currentEvent
+		t.CurrentGameShorthand = gameName
+		t.CurrentEventShorthand = eventShorthand
 	}
 
 	controller.TemplateMapping["admin/event/newedit.html"].ExecuteTemplate(w, "tbase", t)
@@ -111,6 +119,18 @@ func HandleAdminEventNewEditPost(w http.ResponseWriter, r *http.Request) {
 
 	eventData := AdminEventPostData{}
 	err := utility.ReadJsonFromRequestBodyStruct(r, &eventData)
+	if err != nil {
+		log.Print(err)
+		adminEventRespondJsonError(errorEventUnspecifiedError, w)
+		return
+	}
+
+	if eventData.IsNew {
+		err = event.AddEventJoined(&eventData.Event)
+	} else {
+		err = event.ModifyEventByShorthandJoined(eventData.OriginalEventShorthand, eventData.OriginalGameShorthand, &eventData.Event)
+	}
+
 	if err != nil {
 		log.Print(err)
 		adminEventRespondJsonError(errorEventUnspecifiedError, w)
