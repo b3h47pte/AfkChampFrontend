@@ -5,7 +5,7 @@ rocketelo.controller('EditEventController', function($scope, $http, $window) {
         OriginalGameShorthand: origGame , OriginalEventShorthand: origEvent }).
       success(function(data, status, headers, config) {
         // Redirect back to game list
-        $window.location.href = "/admin/event/league";
+        $window.location.href = "/admin/event";
       }).
       
       error(function(data, status, headers, config) {

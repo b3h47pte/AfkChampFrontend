@@ -4,6 +4,7 @@ import (
 	"AfkChampFrontend/controller"
 	"AfkChampFrontend/controller/about"
 	"AfkChampFrontend/controller/admin"
+	"AfkChampFrontend/controller/live"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -32,10 +33,13 @@ func main() {
 	r.HandleFunc("/admin/user/{userid}/delete", admin.HandleAdminDeleteUsePage).Methods("GET")
 	r.HandleFunc("/admin/user", admin.HandleAdminUserNewEditPost).Methods("POST")
 	r.HandleFunc("/admin/event", admin.HandleAdminEventNewEditPost).Methods("POST")
+	r.HandleFunc("/admin/event", admin.HandleAdminEventIndexRoute).Methods("GET")
 	r.HandleFunc("/admin/event/new", admin.HandleAdminEventNewRoute).Methods("GET")
-	r.HandleFunc("/admin/event/{gameName}", admin.HandleAdminEventIndexRoute).Methods("GET")
-	r.HandleFunc("/admin/event/{gameName}/{eventShorthand}", admin.HandleAdminEventEditRoute).Methods("GET")
-	r.HandleFunc("/admin/event/{gameName}/{eventShorthand}/delete", admin.HandleAdminEventDeleteRoute).Methods("GET")
+	r.HandleFunc("/admin/event/{eventShorthand}", admin.HandleAdminEventEditRoute).Methods("GET")
+	r.HandleFunc("/admin/event/{eventShorthand}/delete", admin.HandleAdminEventDeleteRoute).Methods("GET")
+
+	// LIVE STATS
+	r.HandleFunc("/live/{eventShorthand}", live.HandleLiveStatsPageRoute).Methods("GET")
 
 	// MAIN PAGE
 	r.HandleFunc("/login", controller.HandleLoginPageRoute).Methods("GET")

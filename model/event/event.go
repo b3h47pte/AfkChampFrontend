@@ -29,7 +29,7 @@ type EventRowJoined struct {
 // GetEventsJoined returns an array of the 'count' events starting at 'offset' assuming the
 // events are listed by eventID. This returns an array of 'EventRowJoined' which contains
 // the full name of the correspodning owner and game.
-func GetEventsJoined(offset int, count int, gameName string) ([]EventRowJoined, error) {
+func GetEventsJoined(offset int, count int) ([]EventRowJoined, error) {
 	requestedEvents := make([]EventRowJoined, 0, 0)
 	// Find Events
 	rows, err := model.Database.Queryx(`SELECT events.eventid AS eventid,
@@ -122,12 +122,12 @@ func RemoveEvent(eventId int64) error {
 }
 
 // RemoveEventByShorthand removes an event given an event shorthand and game name.
-func RemoveEventByShorthand(eventShorthand string, gameShorthand string) error {
+func RemoveEventByShorthand(eventShorthand string) error {
 	_, err := model.Database.Exec(`DELETE events
 																 FROM events 
 																 INNER JOIN games ON games.gameid = events.currentgameid
-																 WHERE events.eventshorthand = ? AND games.gameshorthand = ? `,
-		eventShorthand, gameShorthand)
+																 WHERE events.eventshorthand = ?`,
+		eventShorthand)
 	if err != nil {
 		return err
 	}
@@ -145,15 +145,14 @@ func ModifyEvent(eventId int64, newProperties *EventRow) error {
 }
 
 // ModifyEventByShorthandJoined takes in the event shorthand and modifies its properties.
-func ModifyEventByShorthandJoined(eventShorthand string, gameShorthand string, newProperties *EventRowJoined) error {
+func ModifyEventByShorthandJoined(eventShorthand string, newProperties *EventRowJoined) error {
 	_, nerr := model.Database.Exec(`UPDATE events 
 																	INNER JOIN users ON users.username = ?
-																	INNER JOIN games ON games.gameshorthand = ?
 																	SET events.ownerid = users.userid, events.eventname = ?, events.currentgameid = games.gameid, events.streamurl = ?, events.eventshorthand = ? 
-																	WHERE events.eventshorthand = ? AND games.gameshorthand = ?`,
-		newProperties.EventOwner, gameShorthand,
+																	WHERE events.eventshorthand = ?`,
+		newProperties.EventOwner,
 		newProperties.EventName, newProperties.StreamUrl,
-		newProperties.EventShorthand, eventShorthand, gameShorthand)
+		newProperties.EventShorthand, eventShorthand)
 	if nerr != nil {
 		return nerr
 	}
@@ -184,7 +183,7 @@ func GetEventByShorthand(shorthand string) (*EventRow, error) {
 }
 
 // GetEventByShorthandAndGameJoined returns an event given an event shorthand with the game id and the owner id joined to get the actual game/owner name.
-func GetEventByShorthandAndGameJoined(shorthand string, gamename string) (*EventRowJoined, error) {
+func GetEventByShorthandAndGameJoined(shorthand string) (*EventRowJoined, error) {
 	row := model.Database.QueryRowx(`SELECT events.eventid AS eventid,
 																						 users.username AS eventowner,
 																						 events.eventname AS eventname,
@@ -194,7 +193,7 @@ func GetEventByShorthandAndGameJoined(shorthand string, gamename string) (*Event
 																			FROM events
 																			INNER JOIN users ON events.ownerid = users.userid
 																			INNER JOIN games on events.currentgameid = games.gameid
-																			WHERE events.eventshorthand = ? AND games.gameshorthand = ?`, shorthand, gamename)
+																			WHERE events.evenlllllthand = ?`, shorthand)
 	newEvent := EventRowJoined{}
 	err := row.StructScan(&newEvent)
 	if err != nil {

@@ -21,7 +21,6 @@ type AdminEventTemplateData struct {
 	Events                []event.EventRowJoined
 	IsNewEvent            bool
 	SelectedEvent         event.EventRowJoined
-	CurrentGameShorthand  string
 	CurrentEventShorthand string
 
 	EventShorthandCharLimit int
@@ -38,7 +37,6 @@ type AdminEventPostData struct {
 	IsNew                  bool
 	Event                  event.EventRowJoined
 	OriginalEventShorthand string
-	OriginalGameShorthand  string
 }
 
 type AdminEventResponseData struct {
@@ -53,22 +51,17 @@ func HandleAdminEventIndexRoute(w http.ResponseWriter, r *http.Request) {
 	}
 	t := CreateBaseEventAdminTemplateData()
 
-	eventVars := mux.Vars(r)
-	// We are guaranteed to get a gamename because it's in the route.
-	gameName, _ := eventVars["gameName"]
-
 	// Get a list of events based on page
 	pageIdx, err := strconv.Atoi(r.FormValue("p"))
 	if err != nil {
 		pageIdx = 0
 	}
-	allEvents, err := event.GetEventsJoined(pageIdx*DefaultPageSize, DefaultPageSize, gameName)
+	allEvents, err := event.GetEventsJoined(pageIdx*DefaultPageSize, DefaultPageSize)
 	if err != nil {
 		log.Print(err)
 		allEvents = make([]event.EventRowJoined, 0, 0)
 	}
 	t.Events = allEvents
-	t.CurrentGameShorthand = gameName
 	controller.TemplateMapping["admin/event/index.html"].ExecuteTemplate(w, "tbase", t)
 }
 
@@ -94,17 +87,15 @@ func handleAdminEventNewEditRoute(w http.ResponseWriter, r *http.Request, isNew 
 	if !isNew {
 		eventVars := mux.Vars(r)
 		// We are guaranteed to get a gamename and event shorthand because it's in the route.
-		gameName, _ := eventVars["gameName"]
 		eventShorthand, _ := eventVars["eventShorthand"]
 
 		// Make sure this game exists...if it doesn't redirect to a new event page.
-		currentEvent, err := event.GetEventByShorthandAndGameJoined(eventShorthand, gameName)
+		currentEvent, err := event.GetEventByShorthandAndGameJoined(eventShorthand)
 		if err != nil {
 			http.Redirect(w, r, "/admin/event/new", http.StatusFound)
 			return
 		}
 		t.SelectedEvent = *currentEvent
-		t.CurrentGameShorthand = gameName
 		t.CurrentEventShorthand = eventShorthand
 	}
 
@@ -128,7 +119,7 @@ func HandleAdminEventNewEditPost(w http.ResponseWriter, r *http.Request) {
 	if eventData.IsNew {
 		err = event.AddEventJoined(&eventData.Event)
 	} else {
-		err = event.ModifyEventByShorthandJoined(eventData.OriginalEventShorthand, eventData.OriginalGameShorthand, &eventData.Event)
+		err = event.ModifyEventByShorthandJoined(eventData.OriginalEventShorthand, &eventData.Event)
 	}
 
 	if err != nil {
@@ -147,14 +138,13 @@ func HandleAdminEventDeleteRoute(w http.ResponseWriter, r *http.Request) {
 	}
 	eventVars := mux.Vars(r)
 	// We are guaranteed to get a gamename and event shorthand because it's in the route.
-	gameName, _ := eventVars["gameName"]
 	eventShorthand, _ := eventVars["eventShorthand"]
 
-	err := event.RemoveEventByShorthand(eventShorthand, gameName)
+	err := event.RemoveEventByShorthand(eventShorthand)
 	if err != nil {
 		log.Print(err)
 	}
-	http.Redirect(w, r, "/admin/event/"+gameName, http.StatusFound)
+	http.Redirect(w, r, "/admin/event", http.StatusFound)
 }
 
 // 'CreateBaseEventAdminTemplateData' creates the template data for rendering.
