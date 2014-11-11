@@ -39,10 +39,10 @@ func init() {
 	TemplateMapping["admin/user/newedit.html"] = template.Must(template.New("admin/user/newedit.html").Delims("<<", ">>").ParseFiles("html/adminBase.html", "html/admin/user/newedit.html"))
 
 	// Live Stats
-	TemplateMapping["live/live.html"] = template.Must(template.New("live/live.html").Delims("<<", ">>").ParseFiles("html/base.html", "html/live/live.html"))
+	TemplateMapping["event/main.html"] = template.Must(template.New("event/main.html").Delims("<<", ">>").ParseFiles("html/base.html", "html/event/main.html"))
 }
 
 func CreateTemplateData() BaseTemplateData {
-	newTempData := BaseTemplateData{WebsiteName: "Rocket ELO"}
+	newTempData := BaseTemplateData{WebsiteName: "Raid Boss Down"}
 	return newTempData
 }

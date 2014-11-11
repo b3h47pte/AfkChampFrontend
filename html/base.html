@@ -9,13 +9,29 @@
 <script src="/javascript/external/ui-utils.js" type="text/javascript" charset="utf-8"></script>
 <script src="/javascript/home.js"></script>
 <link rel="stylesheet" href="/css/external/bootstrap.min.css">
+<link rel="stylesheet" href="/css/main.css">
+<base href="/">
 <<template "thead" .>>
 </head>
 <body ng-controller="MainBodyController">
+<!-- User Toolbar -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav navbar-left">
+        <li><a href="/" target="_self">Home</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="/register" target="_self">Become a member</a></li>
+      <li><a href="/login" target="_self">Sign in</a></li>
+    </ul>
+  </div>
+</div>
+</nav>
 <!-- Flash message -->
 <div ng-show="getFlashMessage()"> 
   <div class="alert alert-danger" role="alert">{{getFlashMessage()}}</div>
 </div>
+
 <<template "tbody" .>>
 </body>
 <html>

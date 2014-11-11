@@ -90,9 +90,9 @@ func handleAdminEventNewEditRoute(w http.ResponseWriter, r *http.Request, isNew 
 		eventShorthand, _ := eventVars["eventShorthand"]
 
 		// Make sure this game exists...if it doesn't redirect to a new event page.
-		currentEvent, err := event.GetEventByShorthandAndGameJoined(eventShorthand)
+		currentEvent, err := event.GetEventByShorthandJoined(eventShorthand)
 		if err != nil {
-			http.Redirect(w, r, "/admin/event/new", http.StatusFound)
+			http.Redirect(w, r, "/admin/new/event", http.StatusFound)
 			return
 		}
 		t.SelectedEvent = *currentEvent
