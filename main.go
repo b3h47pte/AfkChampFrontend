@@ -18,6 +18,7 @@ func main() {
 
 	// Setup the routing for the frontend.
 	r := mux.NewRouter()
+	r.StrictSlash(true)
 	// Dynamic Content
 	r.HandleFunc("/", controller.HandleHomeRoute).Methods("GET")
 
@@ -40,6 +41,7 @@ func main() {
 
 	// EVENT PAGES
 	r.HandleFunc("/event/{eventShorthand}", event.HandleEventPageRoute).Methods("GET")
+	r.HandleFunc("/event/{eventShorthand}/{.*}", event.HandleEventPageRoute).Methods("GET")
 
 	// MAIN PAGE
 	r.HandleFunc("/login", controller.HandleLoginPageRoute).Methods("GET")

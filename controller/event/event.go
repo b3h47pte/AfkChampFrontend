@@ -12,7 +12,8 @@ import (
 )
 
 type EventTemplateData struct {
-	Data controller.BaseTemplateData
+	Data           controller.BaseTemplateData
+	EventShorthand string
 }
 
 /*
@@ -33,7 +34,7 @@ func HandleEventPageRoute(w http.ResponseWriter, r *http.Request) {
 		controller.Handle404Page(w, r)
 		return
 	}
-
+	t.EventShorthand = eventShorthand
 	t.Data.WebsiteName = currentEvent.EventName
 	controller.TemplateMapping["event/main.html"].ExecuteTemplate(w, "tbase", t)
 }

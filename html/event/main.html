@@ -1,9 +1,25 @@
+<<define "tpre">>
+  <base href="/event/<<.EventShorthand>>/"></base>
+<<end>>
+
 <<define "thead">>
   <script src="/javascript/event/mainevent.js"></script>
 <<end>>
 
 <<define "tbody">>
-<div ng-controller="MainEventPageController">
-
-</div>
+  <!-- Switch between current, recent, and upcoming matches -->
+  <div class="container-fluid">
+  <div class="row">
+    <div class="col-md-4">
+      <a href="current" type="button" class="btn btn-primary btn-lg btn-block" role="button">Current Matches</a>
+    </div>
+    <div class="col-md-4">
+      <a href="upcoming" type="button" class="btn btn-primary btn-lg btn-block" role="button">Upcoming Matches</a>
+    </div>
+    <div class="col-md-4">
+      <a href="recent" type="button" class="btn btn-primary btn-lg btn-block" role="button">Recent Matches</a>
+    </div>
+  </div>
+  </div>
+  <div ng-view></div>
 <<end>>
