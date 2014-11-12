@@ -52,7 +52,7 @@ func HandleAdminGamePageRoute(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	t := CreateBaseGameAdminTemplateData()
+	t := CreateBaseGameAdminTemplateData(w, r)
 	// Show games in pages. So figure out which page we want
 	pageIdx, err := strconv.Atoi(r.FormValue("p"))
 	if err != nil {
@@ -103,7 +103,7 @@ func handleAdminNewEditGameRoute(w http.ResponseWriter, r *http.Request, isNew b
 		gameRow = &game.GameRow{GameShorthand: gameName}
 	}
 
-	t := CreateBaseGameAdminTemplateData()
+	t := CreateBaseGameAdminTemplateData(w, r)
 	t.SelectedGame = *gameRow
 	t.IsNewGame = isNew
 	t.OldGameShorthand = gameName
@@ -111,8 +111,8 @@ func handleAdminNewEditGameRoute(w http.ResponseWriter, r *http.Request, isNew b
 }
 
 // 'CreateBaseGameAdminTemplateData' creates the template data for rendering.
-func CreateBaseGameAdminTemplateData() *AdminGameTemplateData {
-	t := AdminGameTemplateData{Data: controller.CreateTemplateData(),
+func CreateBaseGameAdminTemplateData(w http.ResponseWriter, r *http.Request) *AdminGameTemplateData {
+	t := AdminGameTemplateData{Data: controller.CreateTemplateData(w, r),
 		GameNameCharLimit:      MaxGameNameLength,
 		GameShorthandCharLimit: MaxGameShorthandLength}
 	return &t

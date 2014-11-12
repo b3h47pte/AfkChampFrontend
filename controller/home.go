@@ -3,17 +3,16 @@
  */
 package controller
 
-import(
-  "net/http"
+import (
+	"net/http"
 )
 
 type HomeTemplateData struct {
-  Data BaseTemplateData
+	Data BaseTemplateData
 }
-
 
 // HandleHomeRoute displays the main page.
 func HandleHomeRoute(w http.ResponseWriter, r *http.Request) {
-  t := HomeTemplateData{Data: CreateTemplateData()}
-  TemplateMapping["main/home.html"].ExecuteTemplate(w, "tbase", t)
+	t := HomeTemplateData{Data: CreateTemplateData(w, r)}
+	TemplateMapping["main/home.html"].ExecuteTemplate(w, "tbase", t)
 }

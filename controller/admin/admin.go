@@ -30,6 +30,6 @@ func HandleAdminRoute(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// If we get here then we know that the user is an admin.
-	t := AdminTemplateData{Data: controller.CreateTemplateData()}
+	t := AdminTemplateData{Data: controller.CreateTemplateData(w, r)}
 	controller.TemplateMapping["admin/admin.html"].ExecuteTemplate(w, "tbase", t)
 }

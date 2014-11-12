@@ -49,7 +49,7 @@ func HandleAdminEventIndexRoute(w http.ResponseWriter, r *http.Request) {
 	if err := RequireAdminRelogin(w, r); err != nil {
 		return
 	}
-	t := CreateBaseEventAdminTemplateData()
+	t := CreateBaseEventAdminTemplateData(w, r)
 
 	// Get a list of events based on page
 	pageIdx, err := strconv.Atoi(r.FormValue("p"))
@@ -81,7 +81,7 @@ func handleAdminEventNewEditRoute(w http.ResponseWriter, r *http.Request, isNew 
 	if err := RequireAdminRelogin(w, r); err != nil {
 		return
 	}
-	t := CreateBaseEventAdminTemplateData()
+	t := CreateBaseEventAdminTemplateData(w, r)
 	t.IsNewEvent = isNew
 
 	if !isNew {
@@ -148,8 +148,8 @@ func HandleAdminEventDeleteRoute(w http.ResponseWriter, r *http.Request) {
 }
 
 // 'CreateBaseEventAdminTemplateData' creates the template data for rendering.
-func CreateBaseEventAdminTemplateData() *AdminEventTemplateData {
-	t := AdminEventTemplateData{Data: controller.CreateTemplateData(),
+func CreateBaseEventAdminTemplateData(w http.ResponseWriter, r *http.Request) *AdminEventTemplateData {
+	t := AdminEventTemplateData{Data: controller.CreateTemplateData(w, r),
 		EventShorthandCharLimit: MaxEventShorthandLength}
 	return &t
 }

@@ -22,7 +22,7 @@ type EventTemplateData struct {
  * Just render the page and the javascript will handle the rest.
  */
 func HandleEventPageRoute(w http.ResponseWriter, r *http.Request) {
-	t := createEventMainTemplateData()
+	t := createEventMainTemplateData(w, r)
 
 	// Modify the header to have the game name.
 	eventVars := mux.Vars(r)
@@ -39,7 +39,7 @@ func HandleEventPageRoute(w http.ResponseWriter, r *http.Request) {
 }
 
 // 'createEventMainTemplateData' creates the template data for rendering.
-func createEventMainTemplateData() *EventTemplateData {
-	t := EventTemplateData{Data: controller.CreateTemplateData()}
+func createEventMainTemplateData(w http.ResponseWriter, r *http.Request) *EventTemplateData {
+	t := EventTemplateData{Data: controller.CreateTemplateData(w, r)}
 	return &t
 }

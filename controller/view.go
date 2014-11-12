@@ -4,14 +4,17 @@
 package controller
 
 import (
+	"AfkChampFrontend/model/user"
 	"html/template"
+	"net/http"
 )
 
 var TemplateMapping map[string]*template.Template
 
 type BaseTemplateData struct {
-	WebsiteName string
-	Data        interface{}
+	WebsiteName  string
+	CurrentUser  *user.UserEntry
+	UserLoggedIn bool
 }
 
 func init() {
@@ -42,7 +45,10 @@ func init() {
 	TemplateMapping["event/main.html"] = template.Must(template.New("event/main.html").Delims("<<", ">>").ParseFiles("html/base.html", "html/event/main.html"))
 }
 
-func CreateTemplateData() BaseTemplateData {
+func CreateTemplateData(w http.ResponseWriter, r *http.Request) BaseTemplateData {
 	newTempData := BaseTemplateData{WebsiteName: "Raid Boss Down"}
+	currentUser, err := GetCurrentUser(w, r, false)
+	newTempData.CurrentUser = currentUser
+	newTempData.UserLoggedIn = (err != nil)
 	return newTempData
 }
