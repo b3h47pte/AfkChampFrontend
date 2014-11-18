@@ -5,14 +5,14 @@ function getMatchShorthand(location) {
 
 rocketelo.config(function($routeProvider) {
   $routeProvider.when('/current', {
-    templateUrl : 'html/angular/currentMatches.html',
+    templateUrl : '/partials/event/currentMatches.html',
     controller: 'CurrentMatchesController'
   }).when('/upcoming', {
-    templateUrl : 'html/angular/currentMatches.html',
-    controller: 'CurrentMatchesController'
+    templateUrl : '/partials/event/upcomingMatches.html',
+    controller: 'UpcomingMatchesController'
   }).when('/recent', {
-    templateUrl : 'html/angular/currentMatches.html',
-    controller: 'CurrentMatchesController'
+    templateUrl : '/partials/event/recentMatches.html',
+    controller: 'PreviousMatchesController'
   });
 });
 
@@ -48,3 +48,5 @@ rocketelo.controller('UpcomingMatchesController', function($scope, $location) {
 
   $scope.init();
 });
+
+

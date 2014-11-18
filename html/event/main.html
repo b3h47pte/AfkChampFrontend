@@ -3,7 +3,10 @@
 <<end>>
 
 <<define "thead">>
+  <script src="/javascript/external/moment.min.js" type="text/javascript"></script>
   <script src="/javascript/event/mainevent.js"></script>
+  <script src="/javascript/event/matchfilter.js"></script>
+  <link rel="stylesheet" type="text/css" href="/css/event.css">
 <<end>>
 
 <<define "tbody">>
@@ -20,6 +23,13 @@
       <a href="recent" type="button" class="btn btn-primary btn-lg btn-block" role="button">Recent Matches</a>
     </div>
   </div>
+
+  <div class="row" id="event-body">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+      <div ng-view></div>
+    </div>
+    <div class="col-md-1"></div>
   </div>
-  <div ng-view></div>
+  </div>
 <<end>>
