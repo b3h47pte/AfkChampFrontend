@@ -1,3 +1,19 @@
 #event-body {
   padding-top: 60px; 
 }
+
+#match-search {
+  width: 80%;
+  padding: 10px;
+  line-height: 16px;
+  border-bottom: 2px solid #CCC;
+}
+
+#match-search input {
+  border: none;
+  width: 90%;
+}
+
+#match-search input:focus {
+  outline: none;
+}

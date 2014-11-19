@@ -3,6 +3,18 @@ function getMatchShorthand(location) {
   return eventShorthand;
 }
 
+rocketelo.factory('matchDisplayService', function($rootScope) {
+  var matchDisplayService = {};
+  matchDisplayService.matchFilter = {};
+
+  matchDisplayService.broadcastFilterUpdate = function(newFilter) {
+    this.matchFilter = newFilter;
+    $rootScope.$broadcast('handleFilterUpdate');
+  };
+
+  return matchDisplayService;
+});
+
 rocketelo.config(function($routeProvider) {
   $routeProvider.when('/current', {
     templateUrl : '/partials/event/currentMatches.html',
