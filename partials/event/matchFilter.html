@@ -12,5 +12,13 @@
 </div>
 
 <div class="col-md-2">
-  <a href="#">FILTER MATCHES <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a>
+  <button id="filter-link" ng-click="toggleFilter()">FILTER MATCHES <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+  <div id="match-filter">
+    <div class="container-fluid nopadding">
+      <div class="row" id="match-filter-header">
+        <div class="col-md-6"><span class="bold">Show Only</span></div>
+        <div class="col-md-6"><span class="bold">By Date</span></div>
+      </div>
+    </div>
+  </div>
 </div>

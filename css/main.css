@@ -7,3 +7,12 @@ body { padding-top: 60px; }
 .bold {
   font-weight: bold;
 }
+
+.full-width {
+  width: 100%;
+}
+
+.nopadding {
+  padding: 0 !important;
+  margin: 0 !important;
+}

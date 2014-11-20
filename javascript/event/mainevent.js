@@ -25,7 +25,18 @@ rocketelo.config(function($routeProvider) {
   }).when('/recent', {
     templateUrl : '/partials/event/recentMatches.html',
     controller: 'PreviousMatchesController'
+  }).otherwise({
+    template: " ",
+    controller: 'DefaultMatchesController'
   });
+});
+
+rocketelo.controller('DefaultMatchesController', function($scope, $location) {
+  $scope.init = function() {
+    $location.path('/current');
+  }
+
+  $scope.init();
 });
 
 rocketelo.controller('CurrentMatchesController', function($scope, $location) {
