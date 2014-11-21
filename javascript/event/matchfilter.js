@@ -14,3 +14,25 @@ rocketelo.controller('MatchFilterController', function($scope, $location, $docum
     }
   }
 });
+
+rocketelo.directive('jqdatepicker', function() {
+  return {
+    restrict: 'A',
+    require: 'ngModel',
+    link: function(scope, element, attrs, ngModelCtrl) {
+      element.datepicker({
+      }); 
+    }
+  };
+});
+
+rocketelo.directive('jqtimepicker', function() {
+  return {
+    restrict: 'A',
+    require: 'ngModel',
+    link: function(scope, element, attrs, ngModelCtrl) {
+      element.timepicker({
+      }); 
+    }
+  };
+});

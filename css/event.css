@@ -30,6 +30,10 @@
   padding: 15px;
 }
 
+#match-filter div.row {
+  margin-left: 0px;
+}
+
 #match-filter:after, #match-filter:before {
   content: "";
   height: 0;
@@ -72,3 +76,13 @@
   font-weight: bold; 
 }
 
+#team-filter ul {
+  margin: 0px;
+  padding: 0px;
+  float: left;
+  list-style: none; 
+}
+
+#date-filter input {
+  width: 80%;
+}

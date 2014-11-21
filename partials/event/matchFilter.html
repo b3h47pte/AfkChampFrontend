@@ -19,6 +19,61 @@
         <div class="col-md-6"><span class="bold">Show Only</span></div>
         <div class="col-md-6"><span class="bold">By Date</span></div>
       </div>
+
+      <div class="row">
+      <form>
+        <div class="col-md-6" id="team-filter">
+          <div class="row">
+            <div class="col-sm-6">
+              <ul>
+                <li><input type="checkbox">Team 1</input></li>
+                <li><input type="checkbox">Team 2</input></li>
+                <li><input type="checkbox">Team 3</input></li>
+                <li><input type="checkbox">Team 4</input></li>
+                <li><input type="checkbox">Team 5</input></li>
+              </ul>
+            </div>
+            <div class="col-sm-6">
+              <ul>
+                <li><input type="checkbox">Team 6</input></li>
+                <li><input type="checkbox">Team 7</input></li>
+                <li><input type="checkbox">Team 8</input></li>
+                <li><input type="checkbox">Team 9</input></li>
+                <li><input type="checkbox">Team 10</input></li>
+              </ul>
+            </div>
+          </div> 
+        </div>
+
+        <div class="col-md-6" id="date-filter">
+          <div class="row">
+            <div class="col-sm-6">
+              <input type="text" id="from-date" ng-model="fromDate" jqdatepicker></input>
+            </div>
+            <div class="col-sm-6">
+              <input type="text" id="to-date" ng-model="toDate" jqdatepicker></input>
+            </div>
+          </div>
+
+          <div class="row">
+            <span class="bold">By Time</span>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <input type="text" id="from-time" ng-model="fromTime" jqtimepicker></input>
+            </div>
+            <div class="col-sm-6">
+              <input type="text" id="to-time" ng-model="toTime" jqtimepicker></input>
+            </div>
+          </div>
+
+          <div class="row">
+            <button type="button" class="btn btn-primary btn-lg btn-block">Submit</button>
+          </div>
+        </div>
+      </form>
+      </div>
     </div>
   </div>
 </div>
