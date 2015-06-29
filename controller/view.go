@@ -41,8 +41,11 @@ func init() {
 	TemplateMapping["admin/user/index.html"] = template.Must(template.New("admin/user/index.html").Delims("<<", ">>").ParseFiles("html/adminBase.html", "html/admin/user/index.html"))
 	TemplateMapping["admin/user/newedit.html"] = template.Must(template.New("admin/user/newedit.html").Delims("<<", ">>").ParseFiles("html/adminBase.html", "html/admin/user/newedit.html"))
 
-	// Live Stats
+	// Events
 	TemplateMapping["event/main.html"] = template.Must(template.New("event/main.html").Delims("<<", ">>").ParseFiles("html/base.html", "html/event/main.html"))
+    
+    // Matches
+    TemplateMapping["match/match.html"] = template.Must(template.New("match/match.html").Delims("<<", ">>").ParseFiles("html/base.html", "html/match/match.html"))
 }
 
 func CreateTemplateData(w http.ResponseWriter, r *http.Request) BaseTemplateData {

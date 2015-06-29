@@ -77,7 +77,11 @@ func CreateUser(username string, password string, email string) (*UserEntry, err
   
   // Send DB query to create the user.
   newUser := UserEntry{Username: username, Password: encryptedPassword, IsAdmin: false, Email: email}
-  _ , nerr = model.Database.Exec("INSERT INTO users (username, password, isadmin, email) VALUES (?, ?, ?, ?)", newUser.Username, newUser.Password, newUser.IsAdmin, newUser.Email)
+  retRow, nerr := model.Database.Exec("INSERT INTO users (username, password, isadmin, email) VALUES (?, ?, ?, ?)", newUser.Username, newUser.Password, newUser.IsAdmin, newUser.Email)
+  if nerr != nil {
+    return nil, nerr
+  }
+  newUser.UserId, nerr = retRow.LastInsertId()
   if nerr != nil {
     return nil, nerr
   }

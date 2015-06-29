@@ -33,15 +33,15 @@ func GetEventsJoined(offset int, count int) ([]EventRowJoined, error) {
 	requestedEvents := make([]EventRowJoined, 0, 0)
 	// Find Events
 	rows, err := model.Database.Queryx(`SELECT events.eventid AS eventid,
-																						 users.username AS eventowner,
-																						 events.eventname AS eventname,
-																						 games.gamename AS currentgamename,
-																						 events.streamurl AS streamurl,
-																						 events.eventshorthand AS eventshorthand 
-																			FROM events
-																			INNER JOIN users ON events.ownerid = users.userid
-																			INNER JOIN games on events.currentgameid = games.gameid
-																			ORDER BY events.eventid ASC LIMIT ?, ?`, offset, count)
+                                           users.username AS eventowner,
+                                           events.eventname AS eventname,
+                                           games.gamename AS currentgamename,
+                                           events.streamurl AS streamurl,
+                                           events.eventshorthand AS eventshorthand 
+                                        FROM events
+                                            INNER JOIN users ON events.ownerid = users.userid
+                                            INNER JOIN games on events.currentgameid = games.gameid
+                                            ORDER BY events.eventid ASC LIMIT ?, ?`, offset, count)
 	if err != nil {
 		return nil, err
 	}

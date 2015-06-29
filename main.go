@@ -5,6 +5,7 @@ import (
 	"AfkChampFrontend/controller/about"
 	"AfkChampFrontend/controller/admin"
 	"AfkChampFrontend/controller/event"
+    "AfkChampFrontend/controller/match"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -42,6 +43,9 @@ func main() {
 	// EVENT PAGES
 	r.HandleFunc("/event/{eventShorthand}", event.HandleEventPageRoute).Methods("GET")
 	r.HandleFunc("/event/{eventShorthand}/{.*}", event.HandleEventPageRoute).Methods("GET")
+  
+    // MATCH PAGES
+    r.HandleFunc("/match/{matchId}", match.HandleMatchPageRoute).Methods("GET")
 
 	// MAIN PAGE
 	r.HandleFunc("/login", controller.HandleLoginPageRoute).Methods("GET")

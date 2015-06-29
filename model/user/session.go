@@ -8,6 +8,7 @@ import(
   "AfkChampFrontend/model"
   "github.com/jmoiron/sqlx"
   "time"
+  "log"
   "errors"
 )
 
