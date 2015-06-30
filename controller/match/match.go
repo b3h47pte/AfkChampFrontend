@@ -4,15 +4,23 @@ import (
 	"AfkChampFrontend/controller"
     "AfkChampFrontend/model/match"
     "github.com/gorilla/mux"
+    "code.google.com/p/gcfg"
 	"net/http"
     "strconv"
     "log"
     "fmt"
 )
 
+type ApiConfig struct {
+  Api struct {
+      Url       string
+  }
+}
+
 type MatchTemplateData struct {
-	Data           controller.BaseTemplateData
-    MatchId        int64
+	Data            controller.BaseTemplateData
+    MatchId         int64
+    WebsocketUrl    string
 }
 
 /*
@@ -45,6 +53,17 @@ func HandleMatchPageRoute(w http.ResponseWriter, r *http.Request) {
                                      basicMatch.TeamOne, basicMatch.TeamTwo,
                                      basicMatch.CurrentGame, basicMatch.TotalGames,
                                      basicMatch.MatchDate.Format("01/02/2006"))
+    
+    // Pass the API server URL to the client.
+    // This URL will be used for a Websocket connection. 
+    var config ApiConfig
+    err := gcfg.ReadFileInto(&config, "config/api.config")
+    if err != nil {
+        log.Fatal(err)
+        controller.Handle404Page(w, r)
+		return
+    }
+    t.WebsocketUrl = config.Api.Url;
     
 	controller.TemplateMapping["match/match.html"].ExecuteTemplate(w, "tbase", t)
 }

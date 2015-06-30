@@ -1,5 +1,17 @@
-// Socket IO Initialization
-var socket = io();
+rocketelo.factory('socketIOService', function($rootScope) {
+    var socketService = {}
+    socketService.isInit = false;
+    socketService.Initialize = function(url, matchId) {
+        if (socketService.isInit) {
+            return;
+        }
+        socketService.isInit = true;
+        socketService.socket = io.connect(url);
+        socketService.socket.emit('identify', {match: matchId.toString()});
+    }
+    
+    return socketService;
+});
 
 rocketelo.config(function($routeProvider) {
   $routeProvider.when('/draft', {
@@ -17,16 +29,16 @@ rocketelo.config(function($routeProvider) {
   });
 });
 
-rocketelo.controller('DraftBanController', function($scope, $location) {
-    
+rocketelo.controller('DraftBanController', function($scope, $location, socketIOService) {
+    socketIOService.Initialize($scope.apiUrl, $scope.matchId);
 });
                      
-rocketelo.controller('MatchController', function($scope, $location) {
-    
+rocketelo.controller('MatchController', function($scope, $location, socketIOService) {
+    socketIOService.Initialize($scope.apiUrl, $scope.matchId);
 });
 
-rocketelo.controller('PostMatchController', function($scope, $location) {
-    
+rocketelo.controller('PostMatchController', function($scope, $location, socketIOService) {
+    socketIOService.Initialize($scope.apiUrl, $scope.matchId);
 });
 
 rocketelo.controller('DefaultMatchController', function($scope, $location) {

@@ -8,11 +8,25 @@
 <<end>>
 
 <<define "tbody">>
+  <!-- Switch between the different stages of the match, however, these buttons should be disabled if the match hasn't reached that stage yet. -->
+  <div class="container-fluid">
+  <div class="row">
+    <div class="col-md-4">
+      <a href="draft" type="button" class="btn btn-primary btn-lg btn-block" role="button">Draft/Ban</a>
+    </div>
+    <div class="col-md-4">
+      <a href="match" type="button" class="btn btn-primary btn-lg btn-block" role="button">Game</a>
+    </div>
+    <div class="col-md-4">
+      <a href="post" type="button" class="btn btn-primary btn-lg btn-block" role="button">Post-Match</a>
+    </div>
+  </div>
+      
   <div class="container-fluid">
   <div class="row" id="event-body">
     <div class="col-md-1"></div>
     <div class="col-md-10">
-      <div ng-view></div>
+      <div ng-view ng-init="apiUrl = '<<.WebsocketUrl>>'; matchId = <<.MatchId>>"></div>
     </div>
     <div class="col-md-1"></div>
   </div>

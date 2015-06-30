@@ -46,6 +46,7 @@ func main() {
   
     // MATCH PAGES
     r.HandleFunc("/match/{matchId}", match.HandleMatchPageRoute).Methods("GET")
+    r.HandleFunc("/match/{matchId}/{.*}", match.HandleMatchPageRoute).Methods("GET")
 
 	// MAIN PAGE
 	r.HandleFunc("/login", controller.HandleLoginPageRoute).Methods("GET")
