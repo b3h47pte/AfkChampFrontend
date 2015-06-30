@@ -2,11 +2,17 @@ package match
 
 import (
 	"AfkChampFrontend/controller"
+    "AfkChampFrontend/model/match"
+    "github.com/gorilla/mux"
 	"net/http"
+    "strconv"
+    "log"
+    "fmt"
 )
 
 type MatchTemplateData struct {
 	Data           controller.BaseTemplateData
+    MatchId        int64
 }
 
 /*
@@ -15,6 +21,31 @@ type MatchTemplateData struct {
  */
 func HandleMatchPageRoute(w http.ResponseWriter, r *http.Request) {
 	t := createMatchMainTemplateData(w, r)
+    
+	matchVars := mux.Vars(r)
+	// We are guaranteed to match id because it's in the route.
+	matchId, _ := matchVars["matchId"]
+	convertedMatchId, nerr := strconv.ParseInt(matchId, 0, 64)
+    if nerr != nil {
+        log.Print(nerr);
+		controller.Handle404Page(w, r)
+		return
+    }
+    
+    t.MatchId = convertedMatchId
+    // Get the two teams against each other and display it as the title
+    // i.e. TEAM1 vs TEAM2 :: Game 2/3 (DATE)
+    basicMatch, nerr := match.QueryBasicInformation(t.MatchId)
+    if nerr != nil {
+        log.Print(nerr);
+		controller.Handle404Page(w, r)
+		return
+    }
+    t.Data.WebsiteName = fmt.Sprintf("%s vs %s :: Game %d/%d (%s)",
+                                     basicMatch.TeamOne, basicMatch.TeamTwo,
+                                     basicMatch.CurrentGame, basicMatch.TotalGames,
+                                     basicMatch.MatchDate.Format("01/02/2006"))
+    
 	controller.TemplateMapping["match/match.html"].ExecuteTemplate(w, "tbase", t)
 }
 

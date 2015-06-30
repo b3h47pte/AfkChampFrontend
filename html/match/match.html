@@ -1,4 +1,5 @@
 <<define "tpre">>
+    <base href="/match/<<.MatchId>>/"></base>
 <<end>>
 
 <<define "thead">>
@@ -7,5 +8,13 @@
 <<end>>
 
 <<define "tbody">>
-
+  <div class="container-fluid">
+  <div class="row" id="event-body">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+      <div ng-view></div>
+    </div>
+    <div class="col-md-1"></div>
+  </div>
+  </div>
 <<end>>

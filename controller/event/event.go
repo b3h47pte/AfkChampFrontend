@@ -9,6 +9,7 @@ import (
 	"AfkChampFrontend/model/event"
 	"github.com/gorilla/mux"
 	"net/http"
+    "log"
 )
 
 type EventTemplateData struct {
@@ -31,6 +32,7 @@ func HandleEventPageRoute(w http.ResponseWriter, r *http.Request) {
 	eventShorthand, _ := eventVars["eventShorthand"]
 	currentEvent, err := event.GetEventByShorthandJoined(eventShorthand)
 	if err != nil {
+        log.Print(err);
 		controller.Handle404Page(w, r)
 		return
 	}
