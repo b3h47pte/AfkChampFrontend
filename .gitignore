@@ -2,3 +2,4 @@
 *.swp
 *login.config
 *db.config
+fonts/*

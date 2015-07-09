@@ -5,11 +5,12 @@
 <<define "thead">>
 <script src="https://cdn.socket.io/socket.io-1.3.5.js"></script>
 <script src="/javascript/match/match.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/match.css">
 <<end>>
 
 <<define "tbody">>
   <!-- Switch between the different stages of the match, however, these buttons should be disabled if the match hasn't reached that stage yet. -->
-  <div class="container-fluid">
+  <div class="container-fluid full-width nopadding draft-controls">
   <div class="row">
     <div class="col-md-4">
       <a href="draft" type="button" class="btn btn-primary btn-lg btn-block" role="button">Draft/Ban</a>
@@ -21,14 +22,7 @@
       <a href="post" type="button" class="btn btn-primary btn-lg btn-block" role="button">Post-Match</a>
     </div>
   </div>
-      
-  <div class="container-fluid">
-  <div class="row" id="event-body">
-    <div class="col-md-1"></div>
-    <div class="col-md-10">
-      <div ng-view ng-init="apiUrl = '<<.WebsocketUrl>>'; matchId = <<.MatchId>>"></div>
-    </div>
-    <div class="col-md-1"></div>
-  </div>
+
+  <div ng-view ng-init="apiUrl = '<<.WebsocketUrl>>'; matchId = <<.MatchId>>"></div>
   </div>
 <<end>>

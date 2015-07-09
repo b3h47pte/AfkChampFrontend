@@ -42,9 +42,32 @@ rocketelo.controller('PostMatchController', function($scope, $location, socketIO
 });
 
 rocketelo.controller('DefaultMatchController', function($scope, $location) {
-  $scope.init = function() {
-    $location.path('/draft');
-  }
+    $scope.init = function() {
+        $location.path('/draft');
+    }
 
-  $scope.init();
+    $scope.init();
+});
+
+rocketelo.controller('TeamDraftController', function ($scope) {
+    $scope.init = function() {
+        $scope.allChampions = [{champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg"},
+                               {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg"},
+                               {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg"},
+                               {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg"},
+                               {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg"},];
+        $scope.allBans = [];
+    }
+    $scope.init();
+});
+
+rocketelo.directive('ngChampionDraft', function() {
+    return {
+        restrict: 'A',
+        templateUrl: '/partials/match/templates/champion.html',
+        scope: {
+            champ: '@',
+            player: '@'
+        }
+    }
 });
