@@ -10,8 +10,8 @@
 
 <<define "tbody">>
   <!-- Switch between the different stages of the match, however, these buttons should be disabled if the match hasn't reached that stage yet. -->
-  <div class="container-fluid full-width nopadding draft-controls">
-  <div class="row">
+  <div class="container-fluid full-width nopadding">
+  <div class="row nopadding full-width">
     <div class="col-md-4">
       <a href="draft" type="button" class="btn btn-primary btn-lg btn-block" role="button">Draft/Ban</a>
     </div>
@@ -23,6 +23,6 @@
     </div>
   </div>
 
-  <div ng-view ng-init="apiUrl = '<<.WebsocketUrl>>'; matchId = <<.MatchId>>"></div>
+  <div ng-view ng-init="apiUrl = '<<.WebsocketUrl>>'; matchId = <<.MatchId>>" class="nopadding full-width"></div>
   </div>
 <<end>>
