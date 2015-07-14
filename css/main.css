@@ -6,6 +6,11 @@ body {
     background-attachment: fixed;
 }
 
+hr {
+    padding: 0;   
+    margin: 0;
+}
+
 @media screen and (max-width: 768px) {
     body {
         padding-top: 120px;   
@@ -17,6 +22,7 @@ body {
 }
 
 .horizontal-center-div {
+    float: none;
     display: block;
     margin-left: auto;
     margin-right: auto;
