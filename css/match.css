@@ -125,3 +125,54 @@
     margin-right: auto;
     border: 3px solid white;
 }
+
+.match-nav {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin: 0;
+    height: 10%;
+    width: 100%;
+    
+    display: flex;
+}
+
+.match-vertical-center {
+    align-self: center;
+}
+
+.match-nav-button {
+    font-family: "proximaNovaBold";
+    font-size: 22px;
+    text-align: center;
+    margin: 5px auto 0;
+    
+    display: inline-block;
+    width: 100%;
+}
+
+.match-nav-signal {
+    width: 33%;
+    height: 10%;
+    background-color: rgb(255, 186, 0);
+}
+
+.match-nav-button:link {
+    color: white;
+    text-decoration: none;
+}
+
+.match-nav-button:active {
+    color: white;
+    text-decoration: none;
+}
+
+.match-nav-button:visited {
+    color: white;
+    text-decoration: none;
+}
+
+.match-nav-button:hover {
+    color: white;
+    text-decoration: none;
+}

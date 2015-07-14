@@ -31,14 +31,17 @@ rocketelo.config(function($routeProvider) {
 
 rocketelo.controller('DraftBanController', function($scope, $location, socketIOService) {
     socketIOService.Initialize($scope.apiUrl, $scope.matchId);
+    $scope.isDraftBan = true;
 });
                      
 rocketelo.controller('MatchController', function($scope, $location, socketIOService) {
     socketIOService.Initialize($scope.apiUrl, $scope.matchId);
+    $scope.isGameStats = true;
 });
 
 rocketelo.controller('PostMatchController', function($scope, $location, socketIOService) {
     socketIOService.Initialize($scope.apiUrl, $scope.matchId);
+    $scope.isPostmatch = true;
 });
 
 rocketelo.controller('DefaultMatchController', function($scope, $location) {
