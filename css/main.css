@@ -16,6 +16,12 @@ body {
     text-align: center;
 }
 
+.horizontal-center-div {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .bold {
     font-weight: bold;
 }

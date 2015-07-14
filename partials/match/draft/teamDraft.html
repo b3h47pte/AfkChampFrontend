@@ -1,29 +1,35 @@
 <div class="row team-draft-container-inner" ng-controller="TeamDraftController">
     <!-- Team Display -->
-    <div class="col-md-2">
-        <figure>
-            <div class="team-image" style="background-image: url('/images/teams/cloud9.png');" ></div>
-            <figcaption class="team-name">Cloud 9</figcaption>
-        </figure>
-    </div>
-
-    <div class="col-md-10">
-        <!-- Champ Display -->
-        <div class="container-fluid">
-            <div class="row">
-                <div ng-repeat="champ in allChampions">
-                    <div ng-champion-draft champ="{{champ.champ}}" player="{{champ.player}}"></div>
-                </div>
-                
-                <div class="col-md-2"></div>
-            </div>
+    <div class="col-xs-2 team-column">
+        <div class="team-display">
+            <figure>
+                <div class="team-image" style="background-image: url('/images/teams/cloud9.png');" ></div>
+                <figcaption class="team-name">Cloud 9</figcaption>
+            </figure>
 
             <!-- Ban Display -->
-            <div class="row">            
-                <div id="bans">
+            <div class="container-fluid">
+                <div class="row">   
+                    <div ng-repeat="ban in allBans track by $index">
+                        <div ng-ban-draft champ="{{ban}}"></div>
+                    </div>
+                </div>
 
+                <div class="row">
+                    <p class="banned-champions-text">BANNED CHAMPIONS</p>
                 </div>
             </div>
+        </div>
+    </div>
+    
+    <div class="col-xs-10 general-champ-column">
+        <!-- Champ Display -->
+        <div class="row horizontal-center-div full-width">
+            <div ng-repeat="champ in allChampions">
+                <div ng-champion-draft champ="{{champ.champ}}" player="{{champ.player}}" playername="{{champ.playerName}}"></div>
+            </div>
+
+            <div class="col-xs-2"></div>
         </div>
     </div>
 

@@ -51,12 +51,12 @@ rocketelo.controller('DefaultMatchController', function($scope, $location) {
 
 rocketelo.controller('TeamDraftController', function ($scope) {
     $scope.init = function() {
-        $scope.allChampions = [{champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg"},
-                               {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg"},
-                               {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg"},
-                               {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg"},
-                               {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg"},];
-        $scope.allBans = [];
+        $scope.allChampions = [{champ: "/images/champions/Aatrox_0.jpg", player: "/images/players/c9-balls.jpg", playerName: "Balls"},
+                               {champ: "/images/champions/Aatrox_0.jpg", player: "/images/players/c9-balls.jpg", playerName: "Balls"},
+                               {champ: "/images/champions/Aatrox_0.jpg", player: "/images/players/c9-balls.jpg", playerName: "Balls"},
+                               {champ: "/images/champions/Aatrox_0.jpg", player: "/images/players/c9-balls.jpg", playerName: "Balls"},
+                               {champ: "/images/champions/Aatrox_0.jpg", player: "/images/players/c9-balls.jpg", playerName: "Balls"},];
+        $scope.allBans = ["/images/champions/Ahri_Square_0.png", "/images/champions/Ahri_Square_0.png", "/images/champions/Ahri_Square_0.png"];
     }
     $scope.init();
 });
@@ -67,7 +67,18 @@ rocketelo.directive('ngChampionDraft', function() {
         templateUrl: '/partials/match/templates/champion.html',
         scope: {
             champ: '@',
-            player: '@'
+            player: '@',
+            playername: '@'
+        }
+    }
+});
+
+rocketelo.directive('ngBanDraft', function() {
+    return {
+        restrict: 'A',
+        templateUrl: '/partials/match/templates/ban.html',
+        scope: {
+            champ: '@'
         }
     }
 });
