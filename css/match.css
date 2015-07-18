@@ -87,6 +87,7 @@
 .champ-column {
     min-width: 100px;
     padding: 0;
+    margin: 0 auto;
 }
 
 .player-image {
@@ -149,6 +150,12 @@
     
     display: inline-block;
     width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .match-nav-button {
+        font-size: 14px;
+    }
 }
 
 .match-nav-signal {
