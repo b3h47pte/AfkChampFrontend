@@ -84,6 +84,11 @@
     margin:auto;
 }
 
+.team-image-flex {
+    flex-grow: 0;
+    margin: 0 !important;
+}
+
 .champ-column {
     min-width: 100px;
     padding: 0;
@@ -182,4 +187,117 @@
 .match-nav-button:hover {
     color: white;
     text-decoration: none;
+}
+
+.game-stats-container {
+    margin-top: 1% !important;
+    width: 80%;
+}
+
+.team-game-stats-container {
+    min-width: 200px;
+    flex-grow: 2;
+}
+
+.game-stats-container-inner {
+    width: 100%;
+    margin: 0 auto;
+}
+
+@font-face {
+    font-family: "proximaNovaCond";
+    src: url("/fonts/proximanovacond.otf");
+}
+
+.team-champ-kills-large {
+    font-family: proximaNovaCond;
+    font-size: 100px;
+    text-align: center;
+    color: white;
+    vertical-align: middle;
+    display: inline-block;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.team-champ-kills-large-flex {
+    flex-grow: 0;
+    align-self: flex-start;
+    margin: 0 !important;
+}
+
+@media screen and (max-width: 768px) {
+    .team-champ-kills-large {
+        font-size: 50px;
+    }
+    
+    .team-game-stats-container {
+        order: 2;   
+    }
+    
+    .time-container {
+        width: 100%;    
+    }
+}
+
+.time-display-outer {
+    text-align: center;
+}
+
+.time-display-inner {
+    display: inline-block;
+}
+
+.time-container {
+    min-width: 100px;
+    flex-grow: 1;
+}
+
+.time-text {
+    font-family: "proximaNovaCond";
+    font-size: 65px;
+    text-align: center;
+    color: white;
+    line-height: 1;
+}
+
+.time-caption {
+    font-family: "proximaNovaCond";
+    font-size: 14px;
+    text-align: center;
+    color: white;
+    position: relative;
+    top: -5px;
+    line-height: 1;
+}
+
+.team-stats-item {
+}
+
+.team-stats-image {
+    border-radius: 50%;
+    padding: 5px;
+    width: 25px;
+    height: 25px;
+}
+
+.team-stats-text {
+    font-family: "proximaNovaCond";
+    font-size: 14px;
+    text-align: center;
+    color: white;
+    margin: 0;
+    padding-left: 5px;
+    padding-right: 15px;
+}
+
+.team-stats-container {
+}
+
+.flipped .team-stats-container {
+    transform: scaleX(-1);
+}
+
+.flipped .team-stats-item p {
+    transform: scaleX(1);
 }

@@ -44,3 +44,31 @@ hr {
 
 .rbd-navbar {
 }
+
+.rbd-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-vertical {
+    flex-direction: column;   
+}
+
+.flipped {
+    transform: scaleX(-1);
+}
+
+.flipped p {
+    transform: scaleX(-1);
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}

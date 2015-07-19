@@ -85,3 +85,11 @@ rocketelo.directive('ngBanDraft', function() {
         }
     }
 });
+
+rocketelo.controller('TeamGameOverviewController', function($scole) {
+    $scope.init = function() {
+        
+    }
+    
+    $scope.init();
+});

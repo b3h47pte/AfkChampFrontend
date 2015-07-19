@@ -1,2 +1,8 @@
 <div ng-include src="'/partials/match/nav.html'"></div>
-Match
+<div class="rbd-container game-stats-container full-width horizontal-center-div">
+    <div class="rbd-container game-stats-container-inner horizontal-center-div">
+        <div class="team-game-stats-container" ng-include src="'/partials/match/game/teamOverview.html'"></div>
+        <div class="time-container" ng-include src="'/partials/match/time.html'"></div>
+        <div class="team-game-stats-container flipped" ng-include src="'/partials/match/game/teamOverview.html'"></div>
+    </div>
+</div>
