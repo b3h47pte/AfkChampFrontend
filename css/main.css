@@ -11,6 +11,22 @@ hr {
     margin: 0;
 }
 
+
+progress {
+    /* Reset the default appearance */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Determinate */
+progress[value] {
+    /* Reset the default appearance */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
 @media screen and (max-width: 768px) {
     body {
         padding-top: 102px;   
@@ -55,6 +71,10 @@ hr {
 
 .flex-vertical {
     flex-direction: column;   
+}
+
+.flex-start-align {
+    align-items: flex-start;   
 }
 
 .flipped {

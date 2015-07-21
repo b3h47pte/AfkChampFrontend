@@ -54,6 +54,7 @@ rocketelo.controller('DefaultMatchController', function($scope, $location) {
 
 rocketelo.controller('TeamDraftController', function ($scope) {
     $scope.init = function() {
+        //TEMPORARY
         $scope.allChampions = [{champ: "/images/champions/Aatrox_0.jpg", player: "/images/players/c9-balls.jpg", playerName: "Balls"},
                                {champ: "/images/champions/Aatrox_0.jpg", player: "/images/players/c9-balls.jpg", playerName: "Balls"},
                                {champ: "/images/champions/Aatrox_0.jpg", player: "/images/players/c9-balls.jpg", playerName: "Balls"},
@@ -86,10 +87,27 @@ rocketelo.directive('ngBanDraft', function() {
     }
 });
 
-rocketelo.controller('TeamGameOverviewController', function($scole) {
+rocketelo.controller('TeamGameOverViewController', function($scope) {
     $scope.init = function() {
-        
+        //TEMPORARY
+        $scope.allPlayers = [
+            {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200 }},
+            {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200 }},
+            {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200 }},
+            {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200 }},
+            {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200 }}
+        ];
     }
     
     $scope.init();
+});
+
+rocketelo.directive('ngPlayerStats', function() {
+    return {
+        restrict: 'A',
+        templateUrl: '/partials/match/templates/playerStats.html',
+        scope: {
+            player: '='
+        }
+    }
 });

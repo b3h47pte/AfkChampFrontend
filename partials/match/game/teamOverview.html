@@ -1,4 +1,4 @@
-<div class="rbd-container flex-vertical game-stats-container-inner" ng-controller="TeamGameOverViewController">
+<div class="rbd-container flex-vertical" ng-controller="TeamGameOverViewController">
     <div class="rbd-container">
         <div class="team-image team-image-flex" style="background-image: url('/images/teams/cloud9.png');" ></div>
         <div class="rbd-container">
@@ -30,6 +30,12 @@
         <div class="rbd-container team-stats-item">
             <img class="team-stats-image" style="background-color: #a50000;" src="/images/icons/kills.png"></img>
             <p class="team-stats-text">3</p>
+        </div>
+    </div>
+
+    <div class="rbd-container flex-vertical player-stats-container">
+        <div ng-repeat="player in allPlayers">
+            <div ng-player-stats player="player"></div>
         </div>
     </div>
 </div>
