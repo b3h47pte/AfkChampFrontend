@@ -111,3 +111,18 @@ rocketelo.directive('ngPlayerStats', function() {
         }
     }
 });
+
+rocketelo.directive('ngStatBar', function() {
+    return {
+        restrict: 'A',
+        templateUrl: '/partials/match/templates/statBar.html',
+        scope: {
+            barclass: '@',
+            value: '@',
+            min: '@',
+            max: '@',
+            percentage: '@',
+            label: '@'
+        }
+    }
+});

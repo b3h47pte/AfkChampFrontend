@@ -142,6 +142,7 @@
 
 .player-stat-container-inner {
     align-items: flex-start;
+    flex-shrink: 0;
 }
 
 .ban-champ-container {
@@ -255,7 +256,7 @@
     margin: 0 !important;
 }
 
-@media screen and (max-width: 950px) {
+@media screen and (max-width: 1255px) {
     .team-champ-kills-large {
         font-size: 50px;
     }
@@ -316,7 +317,7 @@
     text-align: center;
     color: white;
     margin: 0;
-    padding-left: 5px;
+    padding-left: 5px;  
     padding-right: 15px;
 }
 
@@ -334,4 +335,113 @@
 .stat-bar {
     width: 180px;
     height: 20px;
+    background: none;
+}
+
+.stat-bar::-webkit-meter-bar {
+    background: none;
+}
+
+.kill-bar::-webkit-meter-optimum-value {
+    background: #a10dc1;
+    background-size: 100% 100%;
+}
+
+.death-bar::-webkit-meter-optimum-value {
+    background: #303030;
+    background-size: 100% 100%;
+}
+
+.assist-bar::-webkit-meter-optimum-value {
+    background: #218ec6;
+    background-size: 100% 100%;
+}
+
+
+.creep-bar::-webkit-meter-optimum-value {
+    background: #ea8c1c;
+    background-size: 100% 100%;
+}
+
+.kill-bar::-moz-meter-bar {
+    background: #a10dc1;
+    background-size: 100% 100%;
+}
+
+.death-bar::-moz-meter-bar {
+    background: #303030;
+    background-size: 100% 100%;
+}
+
+.assist-bar::-moz-meter-bar {
+    background: #218ec6;
+    background-size: 100% 100%;
+}
+
+
+.creep-bar::-moz-meter-bar {
+    background: #ea8c1c;
+    background-size: 100% 100%;
+}
+
+.stat-bar-ie {
+    width: 180px;
+    height: 20px;
+    background-color: transparent;
+    display: block;
+}
+
+.stat-bar-ie > span {
+    height: inherit;
+    display: block;
+}
+
+.kill-bar-ie > span {
+    background-color: #a10dc1;
+    background-size: 100% 100%;
+}
+
+.death-bar-ie > span {
+    background-color: #303030;
+    background-size: 100% 100%;
+}
+
+.assist-bar-ie > span {
+    background-color: #218ec6;
+    background-size: 100% 100%;
+}
+
+.creep-bar-ie > span {
+    background-color: #ea8c1c;
+    background-size: 100% 100%;
+}
+
+.stat-describe-label {
+    position: relative;
+    top: 0;
+    left: -176px;
+    z-index: 2;
+    font-family: "proximaNovaCond";
+    font-size: 12px;
+    color: white;
+    margin : 0;
+    width: 100px;
+}
+
+.flipped .stat-describe-label {
+    text-align: right;
+}
+
+.stat-text {
+    font-family: "proximaNovaBold";
+    font-size: 14px;
+    color: white;
+    margin-bottom: 0;
+    margin-left: 5px;
+    
+    position: relative;
+    left: -100px;
+}
+
+@media screen and (max-width: 1087px) {
 }

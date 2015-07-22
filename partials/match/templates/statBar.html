@@ -1,0 +1,9 @@
+<div class="rbd-container">
+    <meter class="stat-bar {{barclass}}" min="{{min}}" max="{{max}}" value="{{value}}">
+        <div class="stat-bar-ie {{barclass}}-ie">
+            <span ng-style="{width: {{percentage}} + '%'}"></span>
+        </div>
+    </meter>
+    <p class="stat-describe-label">{{label}}</p>
+    <p class="stat-text">{{value}}</p>
+</div>

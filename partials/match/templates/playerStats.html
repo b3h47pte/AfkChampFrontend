@@ -6,17 +6,9 @@
 
     <div class="rbd-container flex-vertical flex-start-align">
         <p class="player-name-large">{{player.playerName}}</p>
-        
-        <progress max="10" value="5" class="stat-bar kills-bar">
-        </progress>
-        
-        <progress max="10" value="2" class="stat-bar deaths-bar">
-        </progress>
-        
-        <progress max="10" value="8" class="stat-bar assists-bar">
-        </progress>
-        
-        <progress max="10" value="3" class="stat-bar creeps-bar">
-        </progress>
+        <div ng-stat-bar barclass="kill-bar" min=0 max=50 value=50 percentage=100.0 label="KILLS"></div>
+        <div ng-stat-bar barclass="death-bar" min=0 max=50 value=10 percentage=20.0 label="DEATHS"></div>
+        <div ng-stat-bar barclass="assist-bar" min=0 max=50 value=40 percentage=80.0 label="ASSISTS"></div>
+        <div ng-stat-bar barclass="creep-bar" min=0 max=50 value=20 percentage=40.0 label="CREEPS"></div>
     </div>
 </div>
