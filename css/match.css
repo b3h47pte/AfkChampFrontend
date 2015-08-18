@@ -444,4 +444,40 @@
 }
 
 @media screen and (max-width: 1087px) {
+    .flipped .player-stats-container {
+        transform: scaleX(-1);   
+    }
+    
+    .flipped .player-stats-container .player-champ {
+        transform: scaleX(1);
+    }
+
+    .flipped .team-stats-container {
+        transform: scaleX(-1);
+    }
+
+    .flipped .team-stats-item p {
+        transform: scaleX(1);
+    }
+
+    .flipped .stat-describe-label {
+        text-align: left;
+        transform: scaleX(1);
+    }
+    
+    .flipped .stat-text {
+        transform: scaleX(1);
+    }
+
+    .flipped .player-name-large {
+        transform: scaleX(1);
+    }
+    
+    .flipped .team-basics-container {
+        transform: scaleX(-1);   
+    }
+
+    .flipped .team-champ-kills-large-flex {
+        transform: scaleX(1);
+    }
 }
