@@ -1,5 +1,5 @@
 <div class="rbd-container">
-    <meter class="stat-bar {{barclass}}" min="{{min}}" max="{{max}}" value="{{value}}">
+    <meter class="stat-bar {{barclass}}" min="{{min}}" max="{{max}}" value="{{max * percentage / 100.0}}">
         <div class="stat-bar-ie {{barclass}}-ie">
             <span ng-style="{width: {{percentage}} + '%'}"></span>
         </div>

@@ -57,10 +57,11 @@ rocketelo.factory('compositeStatsService', function ($rootScope) {
                     continue;
                 }
                 
-                compositeStats.kills = Math.max(compositeStats.kills, compositeStatsService.teamStats[t][p].kills);
-                compositeStats.deaths = Math.max(compositeStats.deaths, compositeStatsService.teamStats[t][p].deaths);
-                compositeStats.assists = Math.max(compositeStats.assists, compositeStatsService.teamStats[t][p].assists);
-                compositeStats.creeps = Math.max(compositeStats.creeps, compositeStatsService.teamStats[t][p].creeps);
+                // The constant numbers are to make it so that the bars don't start off topped off at the beginning of the game (aka there's room to grow until mid game-ish)
+                compositeStats.kills = Math.min(Math.max(compositeStats.kills, compositeStatsService.teamStats[t][p].kills), 5);
+                compositeStats.deaths = Math.min(Math.max(compositeStats.deaths, compositeStatsService.teamStats[t][p].deaths), 3);
+                compositeStats.assists = Math.min(Math.max(compositeStats.assists, compositeStatsService.teamStats[t][p].assists), 5);
+                compositeStats.creeps = Math.min(Math.max(compositeStats.creeps, compositeStatsService.teamStats[t][p].creeps), 50);
             }
         }
         
@@ -147,12 +148,13 @@ rocketelo.directive('ngBanDraft', function() {
 });
 
 rocketelo.controller('TeamGameOverViewController', function($scope, socketIOService, compositeStatsService) {
+    $scope.minimumMeterPercentage = 15.0;
     $scope.initWithTeamIndex = function(teamIndex) {
         $scope.teamIndex = teamIndex;
         
-        // Default Values
+        // Default Values -- Probably should pull in the real values here.
         $scope.allPlayers = [
-            {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200 }, 
+            {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200}, 
                 percentages:{kills: 100.0, deaths: 10.0, assists: 20.0, creeps: 30.0}},
             {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200 },
                 percentages:{kills: 100.0, deaths: 10.0, assists: 20.0, creeps: 30.0}},
@@ -171,10 +173,10 @@ rocketelo.controller('TeamGameOverViewController', function($scope, socketIOServ
     $scope.ReceiveNewCompositeData = function(composite) {
         $scope.overallStats = composite;
         for (var i = 0; i < 5; ++i) {
-            $scope.allPlayers[i].percentages.kills = $scope.allPlayers[i].stats.kills / composite.kills * 100.0;
-            $scope.allPlayers[i].percentages.deaths = $scope.allPlayers[i].stats.deaths / composite.deaths * 100.0;
-            $scope.allPlayers[i].percentages.assists = $scope.allPlayers[i].stats.assists / composite.assists * 100.0;
-            $scope.allPlayers[i].percentages.creeps = $scope.allPlayers[i].stats.creeps / composite.creeps * 100.0;
+            $scope.allPlayers[i].percentages.kills = $scope.allPlayers[i].stats.kills / composite.kills * (100.0 - $scope.minimumMeterPercentage) + $scope.minimumMeterPercentage;
+            $scope.allPlayers[i].percentages.deaths = $scope.allPlayers[i].stats.deaths / composite.deaths * (100.0 - $scope.minimumMeterPercentage) + $scope.minimumMeterPercentage;
+            $scope.allPlayers[i].percentages.assists = $scope.allPlayers[i].stats.assists / composite.assists * (100.0 - $scope.minimumMeterPercentage) + $scope.minimumMeterPercentage;
+            $scope.allPlayers[i].percentages.creeps = $scope.allPlayers[i].stats.creeps / composite.creeps * (100.0 - $scope.minimumMeterPercentage) + $scope.minimumMeterPercentage;
         }
         $scope.$apply();
     }
