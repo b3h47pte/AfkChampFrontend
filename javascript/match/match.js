@@ -5,12 +5,71 @@ rocketelo.factory('socketIOService', function($rootScope) {
         if (socketService.isInit) {
             return;
         }
+        
+        // TODO: Get initial data.
+        
         socketService.isInit = true;
+        socketService.handlers = [];
         socketService.socket = io.connect(url);
         socketService.socket.emit('identify', {match: matchId.toString()});
+        socketService.socket.on('liveupdate', socketService.ReceiveLiveStatsData);
+    }
+    
+    socketService.ReceiveLiveStatsData = function(data) {
+        for(var i = 0; i < socketService.handlers.length; ++i) {
+            socketService.handlers[i](data);
+        }
+    }
+    
+    socketService.RegisterHandler = function(handler) {
+        socketService.handlers.push(handler);
     }
     
     return socketService;
+});
+
+rocketelo.factory('compositeStatsService', function ($rootScope) {
+    var compositeStatsService = {};
+    compositeStatsService.teamStats = [[null, null, null, null, null], [null, null, null, null, null]];
+    compositeStatsService.listeners = [];
+    
+    compositeStatsService.SetStatsForPlayerOnTeam = function(playerIdx, teamIdx, inStats) {
+        if (playerIdx < 0 || playerIdx >= 5 || teamIdx < 0 || teamIdx >= 2) {
+            return;
+        }
+        compositeStatsService.teamStats[teamIdx][playerIdx] = inStats;
+    }
+    
+    compositeStatsService.RegisterListener = function(listener) {
+        compositeStatsService.listeners.push(listener);
+    }
+    
+    compositeStatsService.ComputeCompositeStats = function() {
+        var compositeStats = {
+            kills: 0,
+            deaths: 0,
+            assists: 0,
+            creeps: 0
+        };
+        for (var t = 0; t < 2; ++t) {
+            for (var p = 0; p < 5; ++p) {
+                if (!compositeStatsService.teamStats[t][p]) {
+                    continue;
+                }
+                
+                compositeStats.kills = Math.max(compositeStats.kills, compositeStatsService.teamStats[t][p].kills);
+                compositeStats.deaths = Math.max(compositeStats.deaths, compositeStatsService.teamStats[t][p].deaths);
+                compositeStats.assists = Math.max(compositeStats.assists, compositeStatsService.teamStats[t][p].assists);
+                compositeStats.creeps = Math.max(compositeStats.creeps, compositeStatsService.teamStats[t][p].creeps);
+            }
+        }
+        
+        for (var i = 0; i < compositeStatsService.listeners.length; ++i) {
+            compositeStatsService.listeners[i](compositeStats);
+        }
+    }
+    
+    return compositeStatsService;
 });
 
 rocketelo.config(function($routeProvider) {
@@ -52,7 +111,7 @@ rocketelo.controller('DefaultMatchController', function($scope, $location) {
     $scope.init();
 });
 
-rocketelo.controller('TeamDraftController', function ($scope) {
+rocketelo.controller('TeamDraftController', function ($scope, socketIOService) {
     $scope.init = function() {
         //TEMPORARY
         $scope.allChampions = [{champ: "/images/champions/Aatrox_0.jpg", player: "/images/players/c9-balls.jpg", playerName: "Balls"},
@@ -87,19 +146,74 @@ rocketelo.directive('ngBanDraft', function() {
     }
 });
 
-rocketelo.controller('TeamGameOverViewController', function($scope) {
-    $scope.init = function() {
-        //TEMPORARY
+rocketelo.controller('TeamGameOverViewController', function($scope, socketIOService, compositeStatsService) {
+    $scope.initWithTeamIndex = function(teamIndex) {
+        $scope.teamIndex = teamIndex;
+        
+        // Default Values
         $scope.allPlayers = [
-            {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200 }},
-            {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200 }},
-            {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200 }},
-            {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200 }},
-            {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200 }}
+            {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200 }, 
+                percentages:{kills: 100.0, deaths: 10.0, assists: 20.0, creeps: 30.0}},
+            {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200 },
+                percentages:{kills: 100.0, deaths: 10.0, assists: 20.0, creeps: 30.0}},
+            {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200 },
+                percentages:{kills: 100.0, deaths: 10.0, assists: 20.0, creeps: 30.0}},
+            {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200 },
+                percentages:{kills: 100.0, deaths: 10.0, assists: 20.0, creeps: 30.0}},
+            {champ: "/images/champions/Aatrox_Square_0.png", player: "/images/players/c9-balls.jpg", playerName: "Balls", stats:{kills: 10, deaths: 5, assists: 8, creeps: 200 },
+                percentages:{kills: 100.0, deaths: 10.0, assists: 20.0, creeps: 30.0}}
         ];
+        
+        compositeStatsService.RegisterListener($scope.ReceiveNewCompositeData);
+        socketIOService.RegisterHandler($scope.ReceiveData);
     }
     
-    $scope.init();
+    $scope.ReceiveNewCompositeData = function(composite) {
+        $scope.overallStats = composite;
+        for (var i = 0; i < 5; ++i) {
+            $scope.allPlayers[i].percentages.kills = $scope.allPlayers[i].stats.kills / composite.kills * 100.0;
+            $scope.allPlayers[i].percentages.deaths = $scope.allPlayers[i].stats.deaths / composite.deaths * 100.0;
+            $scope.allPlayers[i].percentages.assists = $scope.allPlayers[i].stats.assists / composite.assists * 100.0;
+            $scope.allPlayers[i].percentages.creeps = $scope.allPlayers[i].stats.creeps / composite.creeps * 100.0;
+        }
+        $scope.$apply();
+    }
+    
+    $scope.ReceiveData = function(data) {
+        // Strip data to the relevant bits and organize it such that the UI can use it.
+        var myTeam = LiveStats.GetTeam(data, $scope.teamIndex);
+        
+        for (var i = 0; i < 5; ++i) {
+            var player = LiveStats.GetPlayerFromTeam(myTeam, i);
+            
+            var uiPlayerObject = {};
+            if ($scope.allPlayers.length > i) {
+                uiPlayerObject = $scope.allPlayers[i];
+            } else {
+                $scope.allPlayers.push(uiPlayerObject);   
+            }
+            
+            uiPlayerObject.champ = LiveStatsUtility.GetChampionProfilePicture(LiveStats.GetPlayerChampionName(player));
+            uiPlayerObject.playerName = LiveStats.GetPlayerName(player);
+            uiPlayerObject.player = LiveStatsUtility.GetPlayerProfilePicture(uiPlayerObject.playerName);
+            uiPlayerObject.stats = LiveStats.GetPlayerOverviewStats(player);
+            
+            // Cleanup Stats (make sure they're not negative...)
+            uiPlayerObject.stats.kills = Math.max(uiPlayerObject.stats.kills, 0);
+            uiPlayerObject.stats.deaths = Math.max(uiPlayerObject.stats.deaths, 0);
+            uiPlayerObject.stats.assists = Math.max(uiPlayerObject.stats.assists, 0);
+            uiPlayerObject.stats.creeps = Math.max(uiPlayerObject.stats.creeps, 0);
+            
+            compositeStatsService.SetStatsForPlayerOnTeam(i, $scope.teamIndex, uiPlayerObject.stats);
+        }
+        
+        // Compute composite stats (aka combine stats from both teams to get meaningful data).
+        // This is necessary because we want to set the "max" value of the bars for kills, deaths, etc. to be based off the 
+        // maximum value existing in the game at the current moment in time to allow clients to make meaningful visual comparisons.
+        compositeStatsService.ComputeCompositeStats();
+        
+        $scope.$apply();
+    }
 });
 
 rocketelo.directive('ngPlayerStats', function() {

@@ -6,9 +6,9 @@
 
     <div class="rbd-container flex-vertical flex-start-align">
         <p class="player-name-large">{{player.playerName}}</p>
-        <div ng-stat-bar barclass="kill-bar" min=0 max=50 value=50 percentage=100.0 label="KILLS"></div>
-        <div ng-stat-bar barclass="death-bar" min=0 max=50 value=10 percentage=20.0 label="DEATHS"></div>
-        <div ng-stat-bar barclass="assist-bar" min=0 max=50 value=40 percentage=80.0 label="ASSISTS"></div>
-        <div ng-stat-bar barclass="creep-bar" min=0 max=50 value=20 percentage=40.0 label="CREEPS"></div>
+        <div ng-stat-bar barclass="kill-bar" min=0 max={{$parent.overallStats.kills}} value={{player.stats.kills}} percentage={{player.percentages.kills}} label="KILLS"></div>
+        <div ng-stat-bar barclass="death-bar" min=0 max={{$parent.overallStats.deaths}} value={{player.stats.deaths}} percentage={{player.percentages.deaths}} label="DEATHS"></div>
+        <div ng-stat-bar barclass="assist-bar" min=0 max={{$parent.overallStats.assists}} value={{player.stats.assists}} percentage={{player.percentages.assists}} label="ASSISTS"></div>
+        <div ng-stat-bar barclass="creep-bar" min=0 max={{$parent.overallStats.creeps}} value={{player.stats.creeps}} percentage={{player.percentages.creeps}} label="CREEPS"></div>
     </div>
 </div>
