@@ -166,6 +166,16 @@ rocketelo.controller('TeamGameOverViewController', function($scope, socketIOServ
                 percentages:{kills: 100.0, deaths: 10.0, assists: 20.0, creeps: 30.0}}
         ];
         
+        $scope.teamStats = {
+            gold: 25200,
+            towers: 3,
+            dragons: 1,
+            barons: 0,
+            kills: 30,
+            series: 0,
+            team: "/images/teams/cloud9.png"
+        };
+        
         compositeStatsService.RegisterListener($scope.ReceiveNewCompositeData);
         socketIOService.RegisterHandler($scope.ReceiveData);
     }
@@ -185,6 +195,7 @@ rocketelo.controller('TeamGameOverViewController', function($scope, socketIOServ
         // Strip data to the relevant bits and organize it such that the UI can use it.
         var myTeam = LiveStats.GetTeam(data, $scope.teamIndex);
         
+        // Player Stats (Kills, Deaths, Assits, Creeps)
         for (var i = 0; i < 5; ++i) {
             var player = LiveStats.GetPlayerFromTeam(myTeam, i);
             
@@ -213,6 +224,17 @@ rocketelo.controller('TeamGameOverViewController', function($scope, socketIOServ
         // This is necessary because we want to set the "max" value of the bars for kills, deaths, etc. to be based off the 
         // maximum value existing in the game at the current moment in time to allow clients to make meaningful visual comparisons.
         compositeStatsService.ComputeCompositeStats();
+        
+        // Team Stats (Gold, Towers, Dragons, Barons, Kills)
+        $scope.teamStats = {
+            gold: Math.max(LiveStats.GetTeamGold(myTeam), 0),
+            towers: Math.max(LiveStats.GetTeamTowers(myTeam), 0),
+            dragons: Math.max(LiveStats.GetTeamCurrentDragons(myTeam), 0),
+            barons: Math.max(LiveStats.GetTeamBarons(myTeam), 0),
+            kills: Math.max(LiveStats.GetTeamKills(myTeam), 0),
+            series: Math.max(LiveStats.GetTeamSeriesWins(myTeam), 0),
+            team: LiveStatsUtility.GetTeamImage(myTeam)
+        };
         
         $scope.$apply();
     }

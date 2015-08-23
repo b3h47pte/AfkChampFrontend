@@ -1,35 +1,35 @@
 <div class="rbd-container flex-vertical">
     <div class="rbd-container team-basics-container">
-        <div class="team-image team-image-flex" style="background-image: url('/images/teams/cloud9.png');" ></div>
+        <div class="team-image team-image-flex" style="background-image: url({{teamStats.team}});" ></div>
         <div class="rbd-container">
-            <p class="team-champ-kills-large team-champ-kills-large-flex">30</p>
+            <p class="team-champ-kills-large team-champ-kills-large-flex">{{teamStats.series}}</p>
         </div>
     </div>
     
     <div class="rbd-container team-stats-container">
         <div class="rbd-container team-stats-item">
             <img class="team-stats-image" style="background-color: #ff9600;" src="/images/icons/gold.png"></img>
-            <p class="team-stats-text">25.2k</p>
+            <p class="team-stats-text">{{teamStats.gold / 1000.0 | number:1}}k</p>
         </div>
     
         <div class="rbd-container team-stats-item">
             <img class="team-stats-image" style="background-color: #4d8d91;" src="/images/icons/towers.png"></img>
-            <p class="team-stats-text">3</p>
+            <p class="team-stats-text">{{teamStats.towers}}</p>
         </div>
 
         <div class="rbd-container team-stats-item">
             <img class="team-stats-image" style="background-color: #9908cf;" src="/images/icons/dragons.png"></img>
-            <p class="team-stats-text">3</p>
+            <p class="team-stats-text">{{teamStats.dragons}}</p>
         </div>
 
         <div class="rbd-container team-stats-item">
             <img class="team-stats-image" style="background-color: #e9521d;" src="/images/icons/baron.png"></img>
-            <p class="team-stats-text">3</p>
+            <p class="team-stats-text">{{teamStats.barons}}</p>
         </div>
 
         <div class="rbd-container team-stats-item">
             <img class="team-stats-image" style="background-color: #a50000;" src="/images/icons/kills.png"></img>
-            <p class="team-stats-text">3</p>
+            <p class="team-stats-text">{{teamStats.kills}}</p>
         </div>
     </div>
 

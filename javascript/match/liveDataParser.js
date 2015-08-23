@@ -7,6 +7,30 @@ LiveStats.GetTeam = function(data, index) {
     return data.teams[index];
 }
 
+LiveStats.GetTeamGold = function(team) {
+    return team.gold;
+}
+
+LiveStats.GetTeamTowers = function(team) {
+    return team.towers;
+}
+
+LiveStats.GetTeamCurrentDragons = function(team) {
+    return team.currentDragons;
+}
+
+LiveStats.GetTeamBarons = function(team) {
+    return team.barons;
+}
+
+LiveStats.GetTeamKills = function(team) {
+    return team.kills;
+}
+
+LiveStats.GetTeamSeriesWins = function(team) {
+    return team.series;   
+}
+
 ////////////////////////////
 // Player Parsing
 ////////////////////////////

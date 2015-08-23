@@ -3,7 +3,9 @@ var LiveStatsUtility = {};
 ////////////////////////////
 // Team Utility
 ////////////////////////////
-
+LiveStatsUtility.GetTeamImage = function(teamData) {
+    return "/images/teams/cloud9.png";
+}
 
 ////////////////////////////
 // Player Utility
