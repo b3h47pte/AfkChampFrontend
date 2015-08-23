@@ -155,7 +155,6 @@ rocketelo.controller('GameTimelineController', function($scope, socketIOService)
     }
     
     $scope.ReceiveData = function(data) {
-        console.log("Update time: " + $scope.time);
         $scope.time = LiveStats.GetTime(data);
         
         $scope.$apply();
