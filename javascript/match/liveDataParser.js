@@ -1,6 +1,13 @@
 var LiveStats = {};
 
 ////////////////////////////
+// Global Stats Parsing
+////////////////////////////
+LiveStats.GetTime = function(data) {
+    return data.global.time;
+}
+
+////////////////////////////
 // Team Parsing
 ////////////////////////////
 LiveStats.GetTeam = function(data, index) {

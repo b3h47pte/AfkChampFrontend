@@ -147,6 +147,31 @@ rocketelo.directive('ngBanDraft', function() {
     }
 });
 
+rocketelo.controller('GameTimelineController', function($scope, socketIOService) {
+    $scope.time = 0;
+    
+    $scope.init = function() {
+        socketIOService.RegisterHandler($scope.ReceiveData);
+    }
+    
+    $scope.ReceiveData = function(data) {
+        console.log("Update time: " + $scope.time);
+        $scope.time = LiveStats.GetTime(data);
+        
+        $scope.$apply();
+    }
+    
+    $scope.init();
+});
+
+rocketelo.filter('secondsToDisplayTime', [function() {
+    return function(s) {
+        var minutes = Math.floor(s / 60);
+        var seconds = s % 60;
+        return minutes.toString() + ":" + seconds.toString();
+    };
+}]);
+
 rocketelo.controller('TeamGameOverViewController', function($scope, socketIOService, compositeStatsService) {
     $scope.minimumMeterPercentage = 15.0;
     $scope.initWithTeamIndex = function(teamIndex) {
