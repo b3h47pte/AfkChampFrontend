@@ -38,6 +38,10 @@ LiveStats.GetTeamSeriesWins = function(team) {
     return team.series;   
 }
 
+LiveStats.GetTeamName = function(team) {
+    return team.fullName;
+}
+
 ////////////////////////////
 // Player Parsing
 ////////////////////////////
@@ -46,7 +50,7 @@ LiveStats.GetPlayerFromTeam = function(team, playerIndex) {
 }
 
 LiveStats.GetPlayerName = function(player) {
-    if (player.name == "") {
+    if (!player.name || player.name == "") {
         return "Unknown";
     }
     return player.name;

@@ -7,10 +7,6 @@ LiveStatsUtility.GetTeamImage = function(teamData) {
     return "/images/teams/cloud9.png";
 }
 
-LiveStatsUtility.GetTeamName = function(teamName) {
-    return "Cloud 9";
-}
-
 ////////////////////////////
 // Player Utility
 ////////////////////////////

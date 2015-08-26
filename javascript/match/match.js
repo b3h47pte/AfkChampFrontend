@@ -134,7 +134,7 @@ rocketelo.controller('TeamDraftController', function ($scope, socketIOService) {
         var myTeam = LiveStats.GetTeam(data, $scope.teamIndex);
         $scope.team = {
             image: LiveStatsUtility.GetTeamImage(myTeam),
-            name: LiveStatsUtility.GetTeamName(myTeam)
+            name: LiveStats.GetTeamName(myTeam)
         };
         
         var picks = LiveStats.GetPicksForTeam(data, $scope.teamIndex);
