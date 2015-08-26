@@ -113,7 +113,8 @@ rocketelo.controller('DefaultMatchController', function($scope, $location) {
 });
 
 rocketelo.controller('TeamDraftController', function ($scope, socketIOService) {
-    $scope.init = function() {
+    $scope.initWithTeamIndex = function(teamIndex) {
+        $scope.teamIndex = teamIndex;
         //TEMPORARY
         $scope.allChampions = [{champ: "/images/champions/Aatrox_0.jpg", player: "/images/players/c9-balls.jpg", playerName: "Balls"},
                                {champ: "/images/champions/Aatrox_0.jpg", player: "/images/players/c9-balls.jpg", playerName: "Balls"},
@@ -121,8 +122,34 @@ rocketelo.controller('TeamDraftController', function ($scope, socketIOService) {
                                {champ: "/images/champions/Aatrox_0.jpg", player: "/images/players/c9-balls.jpg", playerName: "Balls"},
                                {champ: "/images/champions/Aatrox_0.jpg", player: "/images/players/c9-balls.jpg", playerName: "Balls"},];
         $scope.allBans = ["/images/champions/Ahri_Square_0.png", "/images/champions/Ahri_Square_0.png", "/images/champions/Ahri_Square_0.png"];
+        
+        socketIOService.RegisterHandler($scope.ReceiveData);
     }
-    $scope.init();
+    
+    $scope.ReceiveData = function(data) {
+        if (!LiveStats.GetIsDraftMode(data)) {
+            return;
+        }
+        
+        var myTeam = LiveStats.GetTeam(data, $scope.teamIndex);
+        $scope.team = {
+            image: LiveStatsUtility.GetTeamImage(myTeam),
+            name: LiveStatsUtility.GetTeamName(myTeam)
+        };
+        
+        var picks = LiveStats.GetPicksForTeam(data, $scope.teamIndex);
+        for (var i = 0; i < picks.length; ++i) {
+            var player = LiveStats.GetPlayerFromTeam(myTeam, i);
+            $scope.allChampions[i] = LiveStatsUtility.ConstructPlayerPickItem(picks[i], player); 
+        }
+        
+        var bans = LiveStats.GetBansForTeam(data, $scope.teamIndex);
+        for (var i = 0; i < bans.length; ++i) {
+            $scope.allBans[i] = LiveStatsUtility.ConstructBanItem(bans[i]);
+        }
+        
+        $scope.$apply();
+    }
 });
 
 rocketelo.directive('ngChampionDraft', function() {
@@ -216,6 +243,9 @@ rocketelo.controller('TeamGameOverViewController', function($scope, socketIOServ
     }
     
     $scope.ReceiveData = function(data) {
+        if (!LiveStats.GetIsGameMode(data)) {
+            return;
+        }
         // Strip data to the relevant bits and organize it such that the UI can use it.
         var myTeam = LiveStats.GetTeam(data, $scope.teamIndex);
         

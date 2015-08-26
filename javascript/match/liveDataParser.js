@@ -65,3 +65,25 @@ LiveStats.GetPlayerOverviewStats = function(player) {
     };
     return statObject;
 }
+
+////////////////////////////
+// Draft Parsing
+////////////////////////////
+LiveStats.GetPicksForTeam = function(data, teamIdx) {
+    return data.picks[teamIdx];
+}
+
+LiveStats.GetBansForTeam = function(data, teamIdx) {
+    return data.bans[teamIdx];
+}
+
+////////////////////////////
+// Miscellaneous Parsing
+////////////////////////////
+LiveStats.GetIsDraftMode = function(data) {
+    return (data.mode == 1);
+}
+
+LiveStats.GetIsGameMode = function(data) {
+    return (data.mode == 0);
+}

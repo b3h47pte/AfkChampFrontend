@@ -1,10 +1,10 @@
-<div class="row team-draft-container-inner" ng-controller="TeamDraftController">
+<div class="row team-draft-container-inner">
     <!-- Team Display -->
     <div class="col-xs-2 team-column">
         <div class="team-display">
             <figure>
-                <div class="team-image" style="background-image: url('/images/teams/cloud9.png');" ></div>
-                <figcaption class="team-name">Cloud 9</figcaption>
+                <div class="team-image" style="background-image: url({{team.image}});" ></div>
+                <figcaption class="team-name">{{team.name}}</figcaption>
             </figure>
 
             <!-- Ban Display -->

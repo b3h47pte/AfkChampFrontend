@@ -1,6 +1,6 @@
 <div ng-include src="'/partials/match/nav.html'"></div>
 <div class="container-fluid draft-container full-width nopadding">
-    <div class="team-draft-container" ng-include src="'/partials/match/draft/teamDraft.html'"></div>
+    <div class="team-draft-container" ng-include src="'/partials/match/draft/teamDraft.html'" ng-controller="TeamDraftController" ng-init="initWithTeamIndex(0)"></div>
     <hr>
-    <div class="team-draft-container" ng-include src="'/partials/match/draft/teamDraft.html'"></div>
+    <div class="team-draft-container" ng-include src="'/partials/match/draft/teamDraft.html'" ng-controller="TeamDraftController" ng-init="initWithTeamIndex(1)"></div>
 </div>
